@@ -1,0 +1,8 @@
+body{
+  margin: 0;
+}
+*{
+  font-family: 'Zen Dots', cursive;
+  color: white;
+  box-sizing: border-box;
+}

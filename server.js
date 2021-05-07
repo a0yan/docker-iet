@@ -1,0 +1,89 @@
+// Configuration
+require('dotenv').config()
+const bodyParser = require('body-parser')
+const express=require("express")
+const passport=require("passport")
+const bcrypt=require("bcrypt")
+const pool=require("./db")
+const jwtG=require("./utils/jwtgenerator")
+const jwt=require("jsonwebtoken");
+const app=express()
+//Middleware
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
+app.use(express.json())
+app.use(passport.initialize()); 
+app.use(passport.session())
+//
+const port=process.env.PORT
+require('./passport')
+
+//Routes
+app.get('/is-verified',async(req,res)=>{
+  const jwttoken=req.header("token")
+  if(!jwttoken){
+      return res.json(false)
+  }
+  try {
+    const payload=await jwt.verify(jwttoken,process.env.JWT_SECRET)
+    return res.json(true)
+  } catch (error) {
+   return res.json(false) 
+  }
+  
+})
+app.post('/register',async(req,res)=>{
+  try{
+    const {email,password}=req.body
+    const user= await pool.query("SELECT * FROM users WHERE user_email= $1",[email])
+    if(user.rows.length!==0){
+      res.status(401).send("User Already Exists")
+    }
+    const saltRounds=10
+    const salt=await bcrypt.genSalt(saltRounds)
+    const bcryptPassword=await bcrypt.hash(password,salt)
+    const new_user=await pool.query("INSERT INTO users (user_email,user_password) VALUES($1,$2) RETURNING * ",[email,bcryptPassword])
+    const token=jwtG(new_user.rows[0].user_id)
+    res.redirect('http://localhost:3000/?token='+token)
+  }catch(err){
+    console.error(err.message)
+    res.status(500).send("Server Error")
+  }
+})
+
+app.post('/login',async(req,res)=>{
+  try{
+    const {email,password}=req.body
+    const user=await pool.query("SELECT * FROM users WHERE user_email=$1",[email])
+    if(user.rows.length==0){
+      return res.status(401).send("User Does Not Exist")
+    }
+    const validPassword=await bcrypt.compare(password,user.rows[0].user_password)
+    if(!validPassword){
+      return res.status(401).send("Incorrect Password")
+    }
+    const token=jwtG(user.rows[0].user_id)
+    res.redirect('http://localhost:3000/?token='+token)
+
+
+  }
+  catch(err){
+    console.error(err.message)
+  }
+})
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }))
+
+app.get('/auth/google/callback', 
+passport.authenticate('google', { failureRedirect: '/auth/google' }),
+(req, res)=>{
+// Successful authentication, redirect home.
+const token=req.user.token
+const jwttoken=jwtG(token)
+res.redirect('http://localhost:3000/?token='+jwttoken);
+})
+// Listening
+app.listen(port,()=>{
+    console.log(`Running on PORT ${port}`);
+})

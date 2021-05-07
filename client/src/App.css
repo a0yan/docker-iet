@@ -1,0 +1,22 @@
+.App{
+  margin:0;
+}
+.Navbar{
+  background:linear-gradient(to right, rgb(0,0,0,1),rgb(0,0,0,0.85));
+  display: flex;
+  justify-content: space-between;
+  height: 60px;
+  align-items: center;
+  padding: 2%;
+  position: static;
+  z-index: 2;
+}
+.Option{
+  border-bottom: 5px solid to right,rgb(0,0,0,0.85);
+  transition: border-color 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+  padding-bottom: 5px;
+}
+.Option:hover{
+  border-bottom: 5px solid grey ;
+  cursor: pointer;
+}
