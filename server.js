@@ -7,17 +7,18 @@ const bcrypt=require("bcrypt")
 const pool=require("./db")
 const jwtG=require("./utils/jwtgenerator")
 const jwt=require("jsonwebtoken");
+const cors=require('cors')
 const app=express()
 //Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
+app.use(cors())
 app.use(express.json())
 app.use(passport.initialize()); 
 app.use(passport.session())
 //
 const port=process.env.PORT
 require('./passport')
-
 //Routes
 app.get('/is-verified',async(req,res)=>{
   const jwttoken=req.header("token")
@@ -83,6 +84,13 @@ const token=req.user.token
 const jwttoken=jwtG(token)
 res.redirect('http://localhost:3000/?token='+jwttoken);
 })
+
+app.get('/get-data',async (req,res)=>{
+  const q=req.headers.db_name
+  const db_data=await pool.query(`SELECT * from  ${q} ORDER BY datecreated DESC LIMIT 1;`)
+  res.status(202).json(db_data.rows[0])
+})
+
 // Listening
 app.listen(port,()=>{
     console.log(`Running on PORT ${port}`);

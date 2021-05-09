@@ -10,6 +10,7 @@
   padding: 2%;
   position: static;
   z-index: 2;
+  width: 100vw;
 }
 .Option{
   border-bottom: 5px solid to right,rgb(0,0,0,0.85);
@@ -19,4 +20,7 @@
 .Option:hover{
   border-bottom: 5px solid grey ;
   cursor: pointer;
+}
+.Option.Hidden {
+  display:none;
 }

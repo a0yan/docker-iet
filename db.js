@@ -1,9 +1,9 @@
-const Pool=require("pg").Pool;
-const pool=new Pool({
-    user:"postgres",
-    password:"root",
-    host:"localhost",
-    port:5432,
-    database:"Infinite Endurance Tech"
-})
-module.exports=pool;
+require('dotenv').config()
+const pg = require("pg")
+const Client=pg.Client
+const client = new Client({
+    connectionString:process.env.CONNECTION_STRING,
+    ssl: { rejectUnauthorized: false }
+  })
+  client.connect();
+module.exports = client;
