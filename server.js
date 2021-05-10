@@ -7,7 +7,8 @@ const bcrypt=require("bcrypt")
 const pool=require("./db")
 const jwtG=require("./utils/jwtgenerator")
 const jwt=require("jsonwebtoken");
-const cors=require('cors')
+const cors=require('cors');
+const path=require('path')
 const app=express()
 //Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -17,7 +18,14 @@ app.use(express.json())
 app.use(passport.initialize()); 
 app.use(passport.session())
 //
-const port=process.env.PORT
+const port=process.env.PORT || 5000
+// process.env.NODE_ENV  for p4oduction
+
+if (process.env.NODE_ENV==='production'){
+  //server static content
+  //npm run build on client
+  app.use(express.static(path.join(__dirname,"client/build")))  
+}
 require('./passport')
 //Routes
 app.get('/is-verified',async(req,res)=>{
@@ -33,6 +41,30 @@ app.get('/is-verified',async(req,res)=>{
   }
   
 })
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }))
+
+app.get('/auth/google/callback', 
+passport.authenticate('google', { failureRedirect: '/auth/google' }),
+(req, res)=>{
+// Successful authentication, redirect home.
+const token=req.user.token
+const jwttoken=jwtG(token)
+res.redirect(process.env.APP_URL+'/?token='+jwttoken);
+})
+
+app.get('/get-data',async (req,res)=>{
+  const q=req.headers.db_name
+  const db_data=await pool.query(`SELECT * from  ${q} ORDER BY datecreated DESC LIMIT 1;`)
+  res.status(202).json(db_data.rows[0])
+})
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client','build', 'index.html'));
+});
+
+//Post Requests
 app.post('/register',async(req,res)=>{
   try{
     const {email,password}=req.body
@@ -51,6 +83,8 @@ app.post('/register',async(req,res)=>{
     res.status(500).send("Server Error")
   }
 })
+
+
 
 app.post('/login',async(req,res)=>{
   try{
@@ -73,23 +107,6 @@ app.post('/login',async(req,res)=>{
   }
 })
 
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }))
-
-app.get('/auth/google/callback', 
-passport.authenticate('google', { failureRedirect: '/auth/google' }),
-(req, res)=>{
-// Successful authentication, redirect home.
-const token=req.user.token
-const jwttoken=jwtG(token)
-res.redirect('http://localhost:3000/?token='+jwttoken);
-})
-
-app.get('/get-data',async (req,res)=>{
-  const q=req.headers.db_name
-  const db_data=await pool.query(`SELECT * from  ${q} ORDER BY datecreated DESC LIMIT 1;`)
-  res.status(202).json(db_data.rows[0])
-})
 
 // Listening
 app.listen(port,()=>{

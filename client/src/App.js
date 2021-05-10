@@ -27,21 +27,24 @@ function App(props) {
       }
       
   }
+ 
   if (query.token) {
     window.localStorage.setItem("token", query.token);
     props.history.push('/home')
  }
       getstatus()
   }, [props.history,props.location.search])
+  console.log(props);
   const logout=()=>{
     window.localStorage.clear();
     setAuth(false)
-    props.history.push('/')
+    props.history.push(`${props.match.path}/`)
   }
   const classes=['Option']
   if (!Auth){
     classes.push('Hidden')
   }
+  
   return (
     <div className="App">
     <div className="Navbar">
@@ -51,11 +54,11 @@ function App(props) {
       </div>
     </div>
     <Switch>
-      <Route exact path='/' render={(props)=>!Auth?(<Login {...props} /> ):(<Redirect to='/home' />)} />
-      <Route exact path='/home' render={(props)=>Auth?(<Home {...props} setAuth={setAuth} />):(<Redirect to='/'/>)} />
-      <Route path='/freq_acc' render={(props)=>Auth?(<FreqAcc {...props}  db_name='freq_acc3'/>):null } />
-      <Route exact path='/freq_phase' render={(props)=>Auth?(<FreqPhase {...props} db_name='freq_acc4'/>):null} />
-      <Route exact path='/acc_time' render={(props)=>Auth?(<Acctime {...props} db_name='freq_acc5'/>):null} />
+      <Route exact path={`/`} render={(props)=>!Auth?(<Login {...props} /> ):(<Redirect to='/home' />)} />
+      <Route exact path={`/home`} render={(props)=>Auth?(<Home {...props} setAuth={setAuth} />):(<Redirect to='/'/>)} />
+      <Route path={`/freq_acc`} render={(props)=>Auth?(<FreqAcc {...props}  db_name='freq_acc3'/>):null } />
+      <Route exact path={`/freq_phase`} render={(props)=>Auth?(<FreqPhase {...props} db_name='freq_acc4'/>):null} />
+      <Route exact path={`/acc_time`} render={(props)=>Auth?(<Acctime {...props} db_name='freq_acc5'/>):null} />
     </Switch>
     </div>
   );
