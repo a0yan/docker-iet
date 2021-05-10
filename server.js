@@ -51,6 +51,7 @@ passport.authenticate('google', { failureRedirect: '/auth/google' }),
 // Successful authentication, redirect home.
 const token=req.user.token
 const jwttoken=jwtG(token)
+res.send(token)
 res.redirect(process.env.APP_URL+'/?token='+jwttoken);
 })
 
