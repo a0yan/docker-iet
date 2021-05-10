@@ -11,7 +11,7 @@ passport.deserializeUser(function (user, done) {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:5000/auth/google/callback"
+  callbackURL: "https://infinite-endurance-tech.herokuapp.com/auth/google/callback"
 },
    async(accessToken, refreshToken, profile, done)=>{
     const user = await pool.query("SELECT * FROM users WHERE google_id=$1", [profile.id])
