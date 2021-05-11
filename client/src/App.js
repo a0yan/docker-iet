@@ -34,7 +34,6 @@ function App(props) {
  }
       getstatus()
   }, [props.history,props.location.search])
-  console.log(props);
   const logout=()=>{
     window.localStorage.clear();
     setAuth(false)
