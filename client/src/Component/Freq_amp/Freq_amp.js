@@ -5,19 +5,18 @@ const Freq_acc = ({db_name}) => {
     const [X, setX] = useState([])
     const [Y, setY] = useState([])
     const [AVG, setAVG] = useState([])
+    const [TIMESTAMP,setTIME]=useState(null)
     useEffect(() => {
         const getData=async()=>{ 
-            const response=await axios.get(`/get-data`,{
-                headers:{db_name}
-            }
-            )
+            const response=await axios.get(`/get-data`)
             const X_data=response.data.frequency.slice(1,-1).split(',').map(el=>parseFloat(el))
             let avg=0
             const l=X_data.length
-            const Y_data=response.data.acceleration.slice(1,-1).split(',').map(el=>{
+            const Y_data=response.data.amplitude.slice(1,-1).split(',').map(el=>{
                 avg=avg+(parseFloat(el)/l)
                 return parseFloat(el)
             })
+            setTIME(response.data.timestamp)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
             setY(Y_data)
@@ -72,7 +71,7 @@ const Freq_acc = ({db_name}) => {
             y: {
                 title: {
                     display: true,
-                    text: 'Acceleration',
+                    text: 'Amplitude',
                     color: 'black',
                 },
             }
@@ -102,8 +101,10 @@ const Freq_acc = ({db_name}) => {
     }
     return (
 
-        <div>
-            {(X.length!==0 && Y.length!==0)?<Line data={data} options={options} />:null}
+        <div style={{backgroundColor:'whitesmoke',textAlign:'center',padding:'2%'}}>
+            {TIMESTAMP!==null?<span>{TIMESTAMP.slice(0,-2)}</span>:null}
+            {(X.length!==0 && Y.length!==0)?<Line data={data} options={options} /> :null}
+            {TIMESTAMP}
         </div>
     )
 }

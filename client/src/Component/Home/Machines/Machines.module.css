@@ -1,5 +1,5 @@
 .Machines{
-    background:linear-gradient( rgba(0, 0, 0, 1)10%,rgb(25,25,25,1));
+    background:#f7f7f7;
     height: 80vh;
     width: 100vw;
     text-align: center;
@@ -12,4 +12,5 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+    
 }

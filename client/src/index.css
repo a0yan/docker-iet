@@ -2,7 +2,7 @@ body{
   margin: 0;
 }
 *{
-  font-family: 'Zen Dots', cursive;
-  color: white;
+  font-family: 'Roboto Slab', serif;
+  color: black;
   box-sizing: border-box;
 }

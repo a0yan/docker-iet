@@ -2,23 +2,34 @@
   margin:0;
 }
 .Navbar{
-  background:linear-gradient(to right, rgb(0,0,0,1),rgb(0,0,0,0.85));
+  background:#f7f7f7;
   display: flex;
-  justify-content: space-between;
-  height: 60px;
+  height: 85px;
   align-items: center;
   padding: 2%;
   position: static;
   z-index: 2;
   width: 100vw;
+  border-bottom: 1px dotted lightgray;
+  /* position: fixed; */
+  z-index: 4;
+}
+.Options{
+  display: flex;
+  flex: 0.9;
+  justify-content: space-evenly;
+}
+.Logo{
+  flex:0.1;
+  width: 100px;
+  height: 100px;
 }
 .Option{
-  border-bottom: 5px solid to right,rgb(0,0,0,0.85);
-  transition: border-color 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-  padding-bottom: 5px;
+  color: grey;
+  transition:  color 1 ease;
 }
 .Option:hover{
-  border-bottom: 5px solid grey ;
+  color: black;
   cursor: pointer;
 }
 .Option.Hidden {

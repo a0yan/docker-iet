@@ -20,7 +20,6 @@ app.use(passport.session())
 //
 const port=process.env.PORT || 5000
 // process.env.NODE_ENV  for p4oduction
-
 if (process.env.NODE_ENV==='production'){
   //server static content
   //npm run build on client
@@ -55,8 +54,8 @@ res.redirect(process.env.APP_URL+'/?token='+jwttoken);
 })
 
 app.get('/get-data',async (req,res)=>{
-  const q=req.headers.db_name
-  const db_data=await pool.query(`SELECT * from  ${q} ORDER BY datecreated DESC LIMIT 1;`)
+  
+  const db_data=await pool.query(`SELECT * from  datatable ORDER BY timestamp DESC LIMIT 1;`)
   res.status(202).json(db_data.rows[0])
 })
 

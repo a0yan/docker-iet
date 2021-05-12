@@ -1,15 +1,17 @@
-.Introduction{
+.Home{
     height: 100vh;
     width: 100vw;
-    /* background-position: center; */
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 1)) ,url("../../assets/bg.jpg");
+    background-color: whitesmoke;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background-size: cover;
+    justify-content:center;
+    text-align: center;
+    background-size:cover;
+    
 }
 .Heading{
-    color:white;
-    font-size: 5rem;
+    color:rgba(0, 0, 0, 0.959);
+    font-size: 3rem;
+    font-style: italic;
+    margin:0;
 }

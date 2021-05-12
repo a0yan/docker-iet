@@ -5,12 +5,33 @@ const Card = ({heading},) => {
         <div className={styles.Card}>
         <div className={styles.Card_Inner}>
             <div className={styles.Card_Front}>
-                <h2>{heading}</h2>
+                <h2 className={styles.Heading}>{heading}</h2>
             </div>
             <div className={styles.Card_Back}>
-                <a href={`/freq_acc`} target="_blank" rel="noopener noreferrer" ><button className={styles.Button}>FFT</button></a>
-                <a href='/freq_phase' target="_blank" rel="noopener noreferrer"><button className={styles.Button}>Freq V/S Phase</button></a>
-                <a href='/acc_time' target="_blank" rel="noopener noreferrer" ><button className={styles.Button}>Acceleration V/S Time</button></a>
+                <div className={styles.Dropdown}>
+                    <button className={styles.Button}>Location 1 </button>
+                    <div className={styles.Dropdown_content}>
+                        <a target="_blank" rel="noopener noreferrer" href='/freq_amp'>FFT</a>
+                        <a target="_blank" rel="noopener noreferrer" href='/freq_phase'>Phase</a>
+                        <a target="_blank" rel="noopener noreferrer" href='/acc_time'>Time History</a>
+                    </div>
+                </div>
+                <div className={styles.Dropdown}>
+                    <button className={styles.Button}>Location 2 </button>
+                    <div className={styles.Dropdown_content}>
+                        <a target="_blank" rel="noopener noreferrer" href='/freq_amp'>FFT</a>
+                        <a target="_blank" rel="noopener noreferrer" href='/freq_phase'>Phase</a>
+                        <a target="_blank" rel="noopener noreferrer" href='/acc_time'>Time History</a>
+                    </div>
+                </div>
+                <div className={styles.Dropdown}>
+                    <button className={styles.Button}>Location 3 </button>
+                    <div className={styles.Dropdown_content}>
+                        <a target="_blank" rel="noopener noreferrer" href='/freq_amp'>FFT</a>
+                        <a target="_blank" rel="noopener noreferrer" href='/freq_phase'>Phase</a>
+                        <a target="_blank" rel="noopener noreferrer" href='/acc_time'>Time History</a>
+                    </div>
+                </div>
             </div>
         </div>    
         </div>

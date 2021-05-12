@@ -10,7 +10,7 @@
 
   "scripts": {
     "heroku-postbuild":"cd client && npm install && npm run build",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",

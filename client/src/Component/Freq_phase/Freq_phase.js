@@ -6,6 +6,7 @@ const Freq_phase = ({db_name}) => {
     const [X, setX] = useState([])
     const [Y, setY] = useState([])
     const [AVG,setAVG]=useState([])
+    const [TIMESTAMP,setTIME]=useState(null)
     useEffect(() => {
         const getData=async()=>{ 
             const response=await axios.get(`/get-data`,{
@@ -20,6 +21,7 @@ const Freq_phase = ({db_name}) => {
                 avg=avg+(parseFloat(el)/l)
                 return parseFloat(el)
             })
+            setTIME(response.data.timestamp)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
             setY(Y_data)
@@ -61,7 +63,7 @@ const Freq_phase = ({db_name}) => {
             x: {
                 title: {
                     display: true,
-                    text: 'Phase',
+                    text: 'Frequency',
                     color: 'black',
                     
                 },
@@ -75,7 +77,7 @@ const Freq_phase = ({db_name}) => {
             y: {
                 title: {
                     display: true,
-                    text: 'Acceleration',
+                    text: 'Phase',
                     color: 'black',
                 },
             }
@@ -83,7 +85,7 @@ const Freq_phase = ({db_name}) => {
         plugins: {
             title:{
                 display:true,
-                text:'Phase V/S Frequency',
+                text:'Phase',
                 font:{
                     size:18,
                 }
@@ -105,8 +107,10 @@ const Freq_phase = ({db_name}) => {
     }
     return (
 
-        <div>
+        <div style={{textAlign:'center',padding:'2%',backgroundColor:'whitesmoke'}}>
+            {TIMESTAMP!==null?<span>{TIMESTAMP.slice(0,-2)}</span>:null}
             {(X.length!==0 && Y.length!==0)?<Line data={data} options={options} />:null}
+            
             
         </div>
     )
