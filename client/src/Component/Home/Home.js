@@ -2,7 +2,7 @@ import {React,useEffect} from 'react'
 import styles from './Home.module.css'
 import Machines from './Machines/Machines'
 import axios from 'axios'
-const Home = ({setAuth}) => {
+const Home = ({setAuth,user,setUser}) => {
     useEffect(() => {
         const getstatus=async()=>{
         const res=await axios({
@@ -11,22 +11,23 @@ const Home = ({setAuth}) => {
             headers:{token:window.localStorage.token}
 
         })
-        console.log(res.data);
-        if(res.data===true)
+        if(res.status===201){
+        setUser(res.data.user)
         setAuth(true)
+        }
         else{
             setAuth(false)
         }
         
     }
         getstatus()
-    }, [setAuth])
+    }, [setAuth,setUser])
     return (
         <>
         <div className={styles.Home}>
             <h1 className={styles.Heading}>INFINITE ENDURANCE TECHNOLOGIES</h1>
         </div>
-        <Machines/>
+        <Machines user={user}/>
         </>
 
     )

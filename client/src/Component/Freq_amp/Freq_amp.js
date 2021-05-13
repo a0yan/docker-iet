@@ -1,14 +1,27 @@
 import {React,useEffect,useState} from 'react'
 import {Line} from 'react-chartjs-2'
 import axios from 'axios'
-const Freq_acc = ({db_name}) => {
+import qs from 'query-string'
+const Freq_acc = (props) => {
     const [X, setX] = useState([])
     const [Y, setY] = useState([])
     const [AVG, setAVG] = useState([])
     const [TIMESTAMP,setTIME]=useState(null)
+    const [Nodata,setNodata]=useState(false)
     useEffect(() => {
-        const getData=async()=>{ 
-            const response=await axios.get(`/get-data`)
+        const getData=async()=>{
+            console.log(props.location.search);
+            const params=qs.parse(props.location.search)
+            const machine_id=params.machine
+            const location_id=params.location
+            const response=await axios.get(`/get-data`,{
+                headers:{
+                    user:props.user,
+                    machine_id:machine_id,
+                    location_id:location_id
+                }
+            })
+            if(response.data!==null){
             const X_data=response.data.frequency.slice(1,-1).split(',').map(el=>parseFloat(el))
             let avg=0
             const l=X_data.length
@@ -16,14 +29,22 @@ const Freq_acc = ({db_name}) => {
                 avg=avg+(parseFloat(el)/l)
                 return parseFloat(el)
             })
-            setTIME(response.data.timestamp)
+            const indtime=new Date (response.data.timestamp)
+            const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"})
+            setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
             setY(Y_data)
-            setAVG(AVG_data)
+        
+             setAVG(AVG_data)
+           }
+           else{
+               setNodata(true)
+           }
         }
         getData()
-    }, [db_name])
+        
+    }, [props])
     let data=null
     if (X.length!==0 && Y.length!==0){
          data={
@@ -101,10 +122,11 @@ const Freq_acc = ({db_name}) => {
     }
     return (
 
-        <div style={{backgroundColor:'whitesmoke',textAlign:'center',padding:'2%'}}>
+        <div style={{backgroundColor:'white',textAlign:'center',padding:'2%'}}>
             {TIMESTAMP!==null?<span>{TIMESTAMP.slice(0,-2)}</span>:null}
             {(X.length!==0 && Y.length!==0)?<Line data={data} options={options} /> :null}
-            {TIMESTAMP}
+            {Nodata?(<h2>Sorry No Data Found !!!</h2>):null}
+
         </div>
     )
 }

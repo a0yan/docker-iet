@@ -34,7 +34,8 @@ app.get('/is-verified',async(req,res)=>{
   }
   try {
     const payload=await jwt.verify(jwttoken,process.env.JWT_SECRET)
-    return res.json(true)
+    
+    return res.status(201).json({user:payload.user})
   } catch (error) {
    return res.json(false) 
   }
@@ -54,9 +55,37 @@ res.redirect(process.env.APP_URL+'/?token='+jwttoken);
 })
 
 app.get('/get-data',async (req,res)=>{
+  try {
+    const location_id=parseInt((req.headers.location_id))
+    const machine_id=parseInt((req.headers.machine_id))
+    const user_id=req.headers.user
+    const db_data=await pool.query(`select d.frequency,d.amplitude,d.phase,d.acceleration,d."time",d."timestamp" from users as u
+    inner join user_machine_location as uml  
+    on u.user_id=uml.user_id 
+    inner join datatable as d 
+    on u.user_id = d.data_id
+    where d.machine_id=$1 and d.location_id=$2 and d.data_id=$3
+    order by d."timestamp"  desc limit 1`,[machine_id,location_id,user_id])
+    if (db_data.rows.length===0){
+      res.status(202).json(null)
+    }
+    else{
+    res.status(202).json(db_data.rows[0])
+    }  
+  } catch (error) {
+    console.error(error.message)
+  }
   
-  const db_data=await pool.query(`SELECT * from  datatable ORDER BY timestamp DESC LIMIT 1;`)
-  res.status(202).json(db_data.rows[0])
+})
+app.get('/get-machine',async(req,res)=>{
+  const id=req.headers.user
+  try {
+    const machine_data=await pool.query('SELECT * FROM user_machine_location where user_id=$1;',[id])
+    res.send(machine_data.rows[0].machine_id)  
+  } catch (error) {
+    console.error(error.message);
+  }
+  
 })
 
 app.get('/*', function (req, res) {
@@ -66,7 +95,7 @@ app.get('/*', function (req, res) {
 //Post Requests
 app.post('/register',async(req,res)=>{
   try{
-    const {email,password}=req.body
+    const {email,password,machine,location}=req.body
     const user= await pool.query("SELECT * FROM users WHERE user_email= $1",[email])
     if(user.rows.length!==0){
       res.status(401).send("User Already Exists")
@@ -75,8 +104,12 @@ app.post('/register',async(req,res)=>{
     const salt=await bcrypt.genSalt(saltRounds)
     const bcryptPassword=await bcrypt.hash(password,salt)
     const new_user=await pool.query("INSERT INTO users (user_email,user_password) VALUES($1,$2) RETURNING * ",[email,bcryptPassword])
+    await pool.query("INSERT INTO user_machine_location (user_id,machine_id,location_id) VALUES ($1,$2,$3)",[new_user.rows[0].user_id,machine,location])
     const token=jwtG(new_user.rows[0].user_id)
-    res.redirect('http://localhost:3000/?token='+token)
+    const user_id=(new_user.rows[0].user_id)
+    res.send({token,user_id})
+
+    
   }catch(err){
     console.error(err.message)
     res.status(500).send("Server Error")
@@ -97,8 +130,8 @@ app.post('/login',async(req,res)=>{
       return res.status(401).send("Incorrect Password")
     }
     const token=jwtG(user.rows[0].user_id)
-    res.redirect('http://localhost:3000/?token='+token)
-
+    const user_id=(user.rows[0].user_id)
+    res.status(202).send({token,user_id})
 
   }
   catch(err){

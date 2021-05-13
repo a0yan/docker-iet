@@ -1,13 +1,24 @@
-import React from 'react'
-import Card from './Card/Card'
+import {React,useEffect,useState} from 'react'
+import Cards from './Cards/Cards'
 import styles from './Machines.module.css'
-const Machines = () => {
-    const machines = ["Machine 1", "Machine 2", "Machine 3"]
+import axios from 'axios'
+const Machines = ({setMachine,user}) => {
+    const [machines, setMachines] = useState([])
+    useEffect(() =>{
+        const get_machine=async()=>{
+        const response=await axios.get('/get-machine',{
+            headers:{user}
+        })
+        setMachines(response.data)
+    }
+    get_machine()
+    
+    }, [user])
     return (
         <div className={styles.Machines}>
             <h1 className={styles.Heading}>Your Factory Name</h1>
             <div className={styles.Cards} >
-                    {machines.map((el, i) => <Card key={i} heading={el} />)}
+                    {machines.map((el, i) => <Cards key={i}  machine_id={i+1} heading={el} />)}
                 
             </div>
         </div>
