@@ -70,6 +70,7 @@ app.get('/get-data',async (req,res)=>{
       res.status(202).json(null)
     }
     else{
+      // console.log(db_data.rows[0].phase);
     res.status(202).json(db_data.rows[0])
     }  
   } catch (error) {

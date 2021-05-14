@@ -28,7 +28,7 @@ const Freq_phase = (props) => {
             const l=X_data.length
             const Y_data=response.data.phase.slice(1,-1).split(',').map(el=>{
                 avg=avg+(parseFloat(el)/l)
-                return parseFloat(el)
+                return parseFloat(el)*(180/Math.PI)
             })
             const indtime=new Date (response.data.timestamp)
             const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"})
