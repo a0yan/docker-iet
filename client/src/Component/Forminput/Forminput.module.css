@@ -1,7 +1,7 @@
 
 .group {
     position: relative;
-    margin: 45px 0;
+    margin: 15px 0;
 }
 
 .form_input {
@@ -15,7 +15,7 @@
     border: none;
     border-radius: 0;
     border-bottom: 1px solid grey;
-    margin: 25px 0;
+    margin: 5px 0;
 }
 
 .form_input:focus {

@@ -24,20 +24,19 @@ const Login = ({setAuth,setUser}) => {
     }
     return (
         <div className={styles.Login} >
-            <h1> Infinite Endurance Technologies </h1>
+            <h1 className={styles.Heading}> Infinite Endurance Technologies </h1>
             <div className={styles.LoginCard}>
-                <div className={styles.Content}>
                 <h1>Sign In</h1>
-                    <form>
+                    <form onSubmit={handleSubmit} className={styles.Content}>
                         <FormInput name='email' type='email' value={userCred.email} label='Email' onChange={handleChange} />
                         <FormInput name='password' type='password' value={userCred.password} label='Password' onChange={handleChange} />
-                    </form>
-                    <button className={styles.Button} onClick={handleSubmit} > Login In </button>
-                    OR
+                    
+                    <button className={styles.Button} onClick={handleSubmit}> Login In </button>
+                    <h4 style={{margin:'0'}}>OR</h4>
                     <a href="/auth/google" >
                         <button className={styles.Button} > Login with  <img src={Icon} style={{ height: '33%', width: '33%' }} alt="G-Icon" /> </button>
                     </a>
-                </div>
+                    </form>
             </div>
         </div>
     )

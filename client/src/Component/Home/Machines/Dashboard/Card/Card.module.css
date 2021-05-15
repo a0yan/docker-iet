@@ -1,0 +1,38 @@
+
+.Button{
+    border-radius: 5px;
+    background-color:#74c69d;
+    margin-top:1.8%;
+    display: flex;
+    flex-wrap: wrap;
+    width: 30%;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    border: none;
+}
+.Button:hover{
+    background-color: #88304e;
+    color: white;
+    cursor: pointer;
+    
+}
+.Button:hover a{
+    color: white;
+}
+.Card{
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    width: 33%;
+    height: 150%;
+    background-color: #4361ee;
+}
+.Heading{
+    margin: 0;
+}
+.Links{
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}

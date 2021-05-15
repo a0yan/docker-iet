@@ -1,5 +1,5 @@
 import {React,useEffect,useState} from 'react'
-import Cards from './Cards/Cards'
+import Dashboard from './Dashboard/Dashboard'
 import styles from './Machines.module.css'
 import axios from 'axios'
 const Machines = ({setMachine,user}) => {
@@ -18,7 +18,7 @@ const Machines = ({setMachine,user}) => {
         <div className={styles.Machines}>
             <h1 className={styles.Heading}>Your Factory Name</h1>
             <div className={styles.Cards} >
-                    {machines.map((el, i) => <Cards key={i}  machine_id={i+1} heading={el} />)}
+                    {machines.map((el, i) => <Dashboard key={i}  machine_id={i+1} heading={el} />)}
                 
             </div>
         </div>
