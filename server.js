@@ -79,14 +79,20 @@ app.get('/get-data',async (req,res)=>{
   
 })
 app.get('/get-machine',async(req,res)=>{
-  const id=req.headers.user
+  const user_id=req.headers.user
   try {
-    const machine_data=await pool.query('SELECT * FROM user_machine_location where user_id=$1;',[id])
-    res.send(machine_data.rows[0].machine_id)  
+    const data=await pool.query('SELECT * FROM user_machine_location where user_id=$1;',[user_id])
+    res.json({machine_data:data.rows[0].machine_id,location_data:data.rows[0].location_id})  
   } catch (error) {
     console.error(error.message);
   }
   
+})
+app.get('/get-machine-params',async(req,res)=>{
+  const user_id=req.headers.user
+  const machine_id=req.headers.machine_id
+  const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 1`,[user_id,machine_id])
+  res.send(params.rows[0])
 })
 
 app.get('/*', function (req, res) {

@@ -1,11 +1,12 @@
 import React from 'react'
 import GaugeChart from 'react-gauge-chart'
-const GaugeChart2 = () => {
+const GaugeChart2 = ({power}) => {
+    power=power/100
     return (
         <div>
             <GaugeChart id="gauge-chart2" 
             nrOfLevels={25} 
-            percent={0.70}
+            percent={power}
             textColor={'Black'} 
 />
         </div>

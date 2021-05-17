@@ -12,9 +12,9 @@
     width: 90vw;
     height: 95vh;
     display: grid;
-    grid-gap:20px;
+    grid-gap:15px;
     grid-template-columns:20vw 25vw 20vw auto;
-    grid-template-rows: 25vh 38vh;
+    grid-template-rows: 30vh 38vh;
     padding:1%;
     background-color: transparent;
     
@@ -26,12 +26,12 @@
     flex-direction: column;
     border-radius: 15px;
     transition: all 1s ease-out;
-}
-.Grid_line:hover{
-    transform: scale(1.095);
-}
-.Grid_line:nth-child(4):hover{
-    transform: none;
+    max-height: 100%;
+    max-width: 100%;
+    min-width:100%;
+    min-height: 100%;
+    overflow:auto;
+    transform: scale(1);
 }
 .Heading{
     margin: 0; 
@@ -42,6 +42,9 @@
 grid-row-start:1;
 grid-row-end:2;
 background:#78c4d4;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 .Oil{
     grid-row-start:1;
@@ -49,24 +52,31 @@ background:#78c4d4;
     grid-column-start: 2;
     grid-column-end: 3;
     display: flex;
+    flex-direction: column;
     align-items: center;
     background:#a8e6cf;
-
+    justify-content: center;
+    padding: 1%;
+   
 
 }
 .Power{
      grid-row-start: 2;
     grid-row-end: 3;
     background: #cae8d5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .Report{
     grid-row-start: 1;
     grid-row-end: 3;
+    grid-column-start: 3;
+    grid-column-end: 4;
     background-color:#ffc996;
     display:flex;
     align-items: center;
-    justify-content: flex-start;
-    
+    justify-content:flex-start;    
 }
 .Report_2{
     grid-row-start: 1;
