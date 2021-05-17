@@ -3,7 +3,7 @@ import styles from './Dashboard.module.css'
 import GaugeChart from './GaugeChart/GaugeChart'
 import GaugeChart2 from './GaugeChart2/GaughChart2'
 import Card from './Card/Card'
-import Line from './PieChart/PieChart'
+import Line from './LineChart/LineChart'
 import axios from 'axios'
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const [machine_params, setmachine_params] = useState({

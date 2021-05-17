@@ -1,7 +1,8 @@
 import React, {useEffect,useState,lazy,Suspense} from 'react'
 import styles from './Machines.module.css'
 import axios from 'axios'
-const Dashboard =lazy(()=> import('./Dashboard/Dashboard'))
+// const Dashboard =lazy(()=> import('./Dashboard/Dashboard'))
+import Dashboard from './Dashboard/Dashboard'
 const Machines = ({setMachine,user}) => {
     const [machines, setmachines] = useState([])
     const [locations, setlocations] = useState([])
@@ -21,9 +22,9 @@ const Machines = ({setMachine,user}) => {
         <div className={styles.Machines}>
             <h1 className={styles.Heading}>Your Factory Name</h1>
             <div className={styles.Cards} >
-                    <Suspense fallback={<div>Loading...</div>}>
+                    {/* <Suspense fallback={<div>Loading...</div>}> */}
                     {machines.map((el, i) => <Dashboard key={i} locations={locations} user={user}  machine_id={i+1} heading={el} />)}
-                    </Suspense>
+                    {/* </Suspense> */}
             </div>
         </div>
     )
