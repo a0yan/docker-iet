@@ -3,7 +3,7 @@ import styles from './Machines.module.css'
 import axios from 'axios'
 const Dashboard =lazy(()=> import('./Dashboard/Dashboard'))
 // import Dashboard from './Dashboard/Dashboard'
-const Machines = ({setMachine,user}) => {
+const Machines = ({user}) => {
     const [machines, setmachines] = useState([])
     const [locations, setlocations] = useState([])
     useEffect(() =>{

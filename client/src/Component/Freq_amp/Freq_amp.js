@@ -3,34 +3,36 @@ import {Line} from 'react-chartjs-2'
 import axios from 'axios'
 import qs from 'query-string'
 const Freq_acc = (props) => {
-    const [X, setX] = useState([])
-    const [Y, setY] = useState([])
-    const [AVG, setAVG] = useState([])
-    const [TIMESTAMP,setTIME]=useState(null)
-    const [Nodata,setNodata]=useState(false)
+    const [X, setX] = useState([]) // X-coordinate as a list
+    const [Y, setY] = useState([]) // Y-coordinate as a list
+    const [AVG, setAVG] = useState([]) // Avg  as a list
+    const [TIMESTAMP,setTIME]=useState(null) // Timestamp of the data
+    const [Nodata,setNodata]=useState(false) // To check if data is recieved or not in the front end
     useEffect(() => {
         const getData=async()=>{
+            // To retrieve the data from the backend by sending user_id,machine_id
+            // and location_id to uniquely idetify the required data 
             console.log(props.location.search);
-            const params=qs.parse(props.location.search)
+            const params=qs.parse(props.location.search)   // Parse the machine_id and location_id from the url search params 
             const machine_id=params.machine
             const location_id=params.location
-            const response=await axios.get(`/get-data`,{
-                headers:{
+            const response=await axios.post(`/get-data`,{
+                
                     user:props.user,
                     machine_id:machine_id,
                     location_id:location_id
-                }
+                
             })
             if(response.data!==null){
-            const X_data=response.data.frequency.slice(1,-1).split(',').map(el=>parseFloat(el))
-            let avg=0
+            const X_data=response.data.frequency.slice(1,-1).split(',').map(el=>parseFloat(el)) // Converting the data from a string
+            let avg=0                                                                           // of list to a list
             const l=X_data.length
             const Y_data=response.data.amplitude.slice(1,-1).split(',').map(el=>{
-                avg=avg+(parseFloat(el)/l)
+                avg=avg+(parseFloat(el)/l)                                  // Converting the data from a string and also calculating average value
                 return parseFloat(el)
             })
             const indtime=new Date (response.data.timestamp)
-            const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"})
+            const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"}) // Changing timezone from GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
@@ -42,20 +44,21 @@ const Freq_acc = (props) => {
                setNodata(true)
            }
         }
-        getData()
+        const clear=setInterval(()=>getData(),5000)
+        return ()=>clearInterval(clear)
         
     }, [props])
     let data=null
     if (X.length!==0 && Y.length!==0){
          data={
-            labels:X,
+            labels:X,  // X-data
             datasets:[{
-                data:Y,
+                data:Y,  // Y-data
                 borderColor: '#202060',
                 label:'Machine 1'
             },{
 
-                data:AVG,
+                data:AVG, // Avg-data
                 borderColor: '#cf0000',
                 label:'Average',
                 elements:{

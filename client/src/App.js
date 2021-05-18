@@ -14,15 +14,15 @@ function App(props) {
   useEffect(() => {
     const query=queryString.parse(props.location.search)
     const getstatus=async()=>{
-      const res=await axios({
-          method:'GET',
+      const res=await axios({ 
+          method:'GET',  // Used for checking if the user is authenticated or not 
           url:'/is-verified',
-          headers:{token:localStorage.token}
+          headers:{token:localStorage.token} // Checks the token is verified or not
 
       })
       if(res.status===201){
       setUser(res.data.user)
-      setAuth(true)
+      setAuth(true) // If response from server is OK changes the auth state to true else false
       }
       else{
           setAuth(false)
@@ -31,19 +31,19 @@ function App(props) {
   }
  
   if (query.token) {
-    window.localStorage.setItem("token", query.token);
+    window.localStorage.setItem("token", query.token); // stores the token in local storage
     props.history.push('/home')
  }
       getstatus()
   }, [props.history,props.location.search,setUser])
   const logout=()=>{
-    window.localStorage.clear();
+    window.localStorage.clear();   // Logs out the user by changing auth state and clearing local storage of the token
     setAuth(false)
     props.history.push(`/`)
   }
   const classes=['Option']
   if (!Auth){
-    classes.push('Hidden')
+    classes.push('Hidden') // Hides the Logout button If the user is not logged In
   }
   return (
     <div className="App">
@@ -57,7 +57,7 @@ function App(props) {
     </div>
     <Switch>
     <Suspense fallback={<div>Loading...</div>}>
-      <Route exact path='/' render={(props)=>!Auth?(<Login  setAuth={setAuth} setUser={setUser} {...props} /> ):(<Redirect to='/home' />)} />
+      <Route exact path='/' render={(props)=>!Auth?(<Login  setAuth={setAuth} setUser={setUser} {...props} /> ):(<Redirect to='/home' />)} /> 
       <Route  path='/home' render={(props)=>Auth?(<Home {...props} user={user} setUser={setUser} setAuth={setAuth}  />):(<Redirect to='/'/>)} />
       <Route path='/freq_amp' render={(props)=>Auth?(<FreqAmp {...props} user={user}/>):null } />
       <Route  path='/freq_phase' render={(props)=>Auth?(<FreqPhase  {...props} user={user} />):null} />

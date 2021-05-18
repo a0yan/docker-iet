@@ -1,6 +1,5 @@
 // Configuration
 require('dotenv').config()
-const bodyParser = require('body-parser')
 const express=require("express")
 const passport=require("passport")
 const bcrypt=require("bcrypt")
@@ -10,9 +9,7 @@ const jwt=require("jsonwebtoken");
 const cors=require('cors');
 const path=require('path')
 const app=express()
-//Middleware
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json());
+//Middlewares
 app.use(cors())
 app.use(express.json())
 app.use(passport.initialize()); 
@@ -54,12 +51,15 @@ const jwttoken=jwtG(token)
 res.redirect(process.env.APP_URL+'/?token='+jwttoken);
 })
 
-app.get('/get-data',async (req,res)=>{
+
+//Post Requests
+app.post('/get-data',async (req,res)=>{
   try {
-    const location_id=parseInt((req.headers.location_id))
-    const machine_id=parseInt((req.headers.machine_id))
-    const user_id=req.headers.user
-    const db_data=await pool.query(`select d.frequency,d.amplitude,d.phase,d.acceleration,d."time",d."timestamp" from users as u
+    const location_id=parseInt((req.body.location_id))
+    const machine_id=parseInt((req.body.machine_id))
+    const user_id=req.body.user
+    const db_data=await pool.query(`select d.frequency,d.amplitude,d.phase,d.acceleration,d."time",d."timestamp"
+    from users as u
     inner join user_machine_location as uml  
     on u.user_id=uml.user_id 
     inner join datatable as d 
@@ -88,18 +88,22 @@ app.get('/get-machine',async(req,res)=>{
   }
   
 })
-app.get('/get-machine-params',async(req,res)=>{
-  const user_id=req.headers.user
-  const machine_id=req.headers.machine_id
-  const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 1`,[user_id,machine_id])
-  res.send(params.rows[0])
+app.post('/get-machine-params',async(req,res)=>{
+  try {
+    const user_id=req.body.user
+    const machine_id=req.body.machine_id
+    const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 1`,[user_id,machine_id])
+    if (params.rows.length==0){
+      res.json(false)
+    }
+    res.send(params.rows[0]) 
+  } catch (error) {
+    console.error(error.message)
+  }
 })
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'client','build', 'index.html'));
-});
 
-//Post Requests
+
 app.post('/register',async(req,res)=>{
   try{
     const {email,password,machine,location}=req.body
@@ -145,6 +149,11 @@ app.post('/login',async(req,res)=>{
     console.error(err.message)
   }
 })
+
+// For Front-End Routes --Production
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client','build', 'index.html'));
+});
 
 
 // Listening

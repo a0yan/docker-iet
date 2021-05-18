@@ -16,29 +16,28 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     })
     useEffect(() => {
         const get_data = async () => {
-            const response = await axios.get('/get-machine-params', {
-                headers: {
-                    user: user,
-                    machine_id: machine_id
-                }
+            const response = await axios.post('/get-machine-params', {
+                user: user,
+                machine_id: machine_id
             })
-            if(response.data!==null){
-            await setmachine_params(
-                {
-                    ...machine_params,
-                    min_oil_level:response.data.min_oil_level,
-                    max_oil_level:response.data.max_oil_level,
-                    oil_level:response.data.oil_level,
-                    oil_quality:response.data.oil_quality,
-                    power:response.data.power,
-                    temperature:response.data.temperature
-                }
+            if (response.data !== false) {
+                await setmachine_params(
+                    {
+                        ...machine_params,
+                        min_oil_level: response.data.min_oil_level,
+                        max_oil_level: response.data.max_oil_level,
+                        oil_level: response.data.oil_level,
+                        oil_quality: response.data.oil_quality,
+                        power: response.data.power,
+                        temperature: response.data.temperature
+                    }
 
-            )}
-            // console.log(response.data);
-            // console.log(machine_params);            
+                )
+            }
         }
-        get_data()
+        const clear = setInterval(() => get_data(), 7000)
+        return () => clearInterval(clear)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [machine_id, user])
     // console.log(machine_params);
     return (
@@ -46,11 +45,12 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
             <h2 className={`${styles.Heading}`}>Equipment {heading}</h2>
             <div className={styles.Dashboard}>
                 <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3>Total Uptime</h3><h3>2 Days 22 Hours </h3></div>
-                <div className={`${styles.Grid_line} ${styles.Oil}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3><GaugeChart
-                    oil_percent={((machine_params.oil_level-machine_params.min_oil_level)/(machine_params.max_oil_level-machine_params.min_oil_level))*100}
-                /> <h3>Oil Quality Indicator</h3><GaugeChart oil_percent={machine_params.oil_quality} /></div>
+                <div className={`${styles.Grid_line} ${styles.Oil}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3>
+                    <GaugeChart
+                        oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
+                    /> <h3>Oil Quality Indicator</h3><GaugeChart oil_percent={machine_params.oil_quality} /></div>
                 <div className={`${styles.Grid_line} ${styles.Report}`}> <h3>Past Report </h3><Line /></div>
-                <div className={`${styles.Grid_line} ${styles.Report_2}`}> <h3>Temperature Level Indicator </h3> </div>
+                <div className={`${styles.Grid_line} ${styles.Report_2}`}> <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h2>{machine_params.temperature}&deg; C</h2> </div>
                 <div className={`${styles.Grid_line} ${styles.Power}`}>
                     <h3>Power Consumption</h3>
                     <GaugeChart2 power={machine_params.power} />
