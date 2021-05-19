@@ -1,19 +1,24 @@
-import { React, useEffect, useState } from 'react'
+import { React, useEffect, useState, useRef } from 'react'
 import styles from './Dashboard.module.css'
 import GaugeChart from './GaugeChart/GaugeChart'
 import GaugeChart2 from './GaugeChart2/GaughChart2'
 import Card from './Card/Card'
 import Line from './LineChart/LineChart'
 import axios from 'axios'
+import timeConverter from './TimeConverter/TimeConverter'
+
 const Dashboard = ({ heading, user, machine_id, locations }) => {
+    const ref_el = useRef(0)
     const [machine_params, setmachine_params] = useState({
         min_oil_level: 0,
         oil_level: 0,
         max_oil_level: 100,
         oil_quality: 0,
-        power: 0,
+        power: 100,
         temperature: 0
     })
+    const [time, settime] = useState('')
+    const [issues, setissues] = useState(new Set([]))
     useEffect(() => {
         const get_data = async () => {
             const response = await axios.post('/get-machine-params', {
@@ -21,21 +26,43 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 machine_id: machine_id
             })
             if (response.data !== false) {
-                await setmachine_params(
-                    {
-                        ...machine_params,
-                        min_oil_level: response.data.min_oil_level,
-                        max_oil_level: response.data.max_oil_level,
-                        oil_level: response.data.oil_level,
-                        oil_quality: response.data.oil_quality,
-                        power: response.data.power,
-                        temperature: response.data.temperature
-                    }
+                if (response.data.power < 50) {
+                    ref_el.current.style.backgroundColor = 'red'
+                    await axios.put('/update-downtime', {
+                        user_id: user,
+                        machine_id: machine_id,
+                        time: new Date().toLocaleString()
+                    })
+                    setissues(new Set(["No Power"]))
+                    settime('00:00:00')
+                }
+                else if (response.data.power > 50 && response.data.power<80) {
+                    setissues(new Set([]))
+                    ref_el.current.style.backgroundColor = 'rgb(36, 233, 69)'
+                    const prev = await axios.post('/get-downtime', {
+                        user_id: user,
+                        machine_id: machine_id,
+                    })
+                    const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
+                    settime(timeConverter(diff))
+                }
+                else if (response.data.power > 80) {
+                    setissues(new Set(["High Power Consumption"]))
+                    const prev = await axios.post('/get-downtime', {
+                        user_id: user,
+                        machine_id: machine_id,
+                    })
+                    const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
+                    settime(timeConverter(diff))
+                    ref_el.current.style.backgroundColor = 'red'
+                }
 
+                setmachine_params(
+                    response.data
                 )
             }
         }
-        const clear = setInterval(() => get_data(), 7000)
+        const clear = setInterval(() => get_data(), 3500)
         return () => clearInterval(clear)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [machine_id, user])
@@ -44,7 +71,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         <div className={styles.Container}>
             <h2 className={`${styles.Heading}`}>Equipment {heading}</h2>
             <div className={styles.Dashboard}>
-                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3>Total Uptime</h3><h3>2 Days 22 Hours </h3></div>
+                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3>Total Uptime</h3> <h3>{time}</h3></div>
                 <div className={`${styles.Grid_line} ${styles.Oil}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3>
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
@@ -62,9 +89,9 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                         )}
                     </div>
                 </div>
-                <div className={`${styles.Grid_line} ${styles.Issues}`}>
+                <div style={{ backgroundColor: 'rgb(36, 233, 69)' }} className={`${styles.Grid_line} ${styles.Issues}`} ref={ref_el} >
                     <h3>Current Issues</h3>
-                    <h4> No Issues In The System </h4>
+                    {issues.size!==0?([...issues].map((el)=><h4>{el}</h4>)):(<h3>No Issues Found</h3>)}
                 </div>
             </div>
         </div>

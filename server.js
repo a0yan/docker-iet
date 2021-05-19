@@ -102,8 +102,34 @@ app.post('/get-machine-params',async(req,res)=>{
   }
 })
 
-
-
+app.put('/update-downtime',async(req,res)=>{
+try {
+  const user_id=req.body.user_id
+  const machine_id=req.body.machine_id
+  const time=req.body.time
+  const response=await pool.query("SELECT * FROM machine_downtime WHERE user_id=$1 AND machine_id=$2",[user_id,machine_id])
+  if(response.rows.length!==0){
+    await pool.query("UPDATE machine_downtime SET prev_downtime=$1 WHERE user_id=$2",[time,user_id])
+  }
+  else{
+    await pool.query("INSERT INTO machine_downtime (user_id,machine_id,prev_downtime) VALUES ($1,$2,$3)",[user_id,machine_id,time])
+  }
+  res.sendStatus(201)
+   
+} catch (error) {
+  console.error(error.message)
+}
+})
+app.post('/get-downtime',async(req,res)=>{
+  try {
+    const user_id=req.body.user_id
+    const machine_id=req.body.machine_id
+    const response=await pool.query("SELECT prev_downtime FROM machine_downtime WHERE user_id=$1 AND machine_id=$2;",[user_id,machine_id])
+    res.send(response.rows[0])
+  } catch (error) {
+    
+  }
+})
 app.post('/register',async(req,res)=>{
   try{
     const {email,password,machine,location}=req.body
