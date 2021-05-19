@@ -39,7 +39,7 @@
 
 
 
-const msToTime=(duration)=>{
+const  msToTime=(duration)=>{
         
     var seconds = Math.floor((duration / 1000) % 60),
      minutes = Math.floor((duration / (1000 * 60)) % 60),
