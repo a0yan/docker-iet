@@ -53,7 +53,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                         machine_id: machine_id,
                     })
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
-                    settime(diff)
+                    settime(timeConverter(diff))
                     ref_el.current.style.backgroundColor = 'red'
                 }
 
