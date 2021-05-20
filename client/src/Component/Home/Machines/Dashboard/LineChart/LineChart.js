@@ -1,23 +1,59 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import {Line} from 'react-chartjs-2' 
-const PieChart = () => {
+const PieChart = ({history}) => {
+    const [X, setX] = useState([])
+    const [Y, setY] = useState([])
+    const [AVG,setAVG]=useState([])
+    useEffect(() => {
+        let avg=0
+        const len=Y.length
+        const power=history.slice().reverse().map((el,i)=>{
+            avg+=el.power/len
+            return el.power
+        })
+        const AVG_data=new Array(len).fill(avg)
+        const time=history.slice().reverse().map((el,i)=>{
+            return new Date(el.timestamp).toLocaleTimeString()
+        })
+        setY(power)
+        setX(time)
+        setAVG(AVG_data)
+    }, [history,Y.length])
+    console.log(X,Y);
     const data={
-        labels:['A','B','C','D','E','F','G','H','I','J','K','L','M','N'],
+        labels:X,
         datasets:[{
-            data:[100,500,250,180,90,250,235,754,214,314,686,12,45,67,46,88,65,99,76,9,65],
+            label:"Power",
+            data:Y,
             borderColor: [
                 'rgb(2,71,94)'
               ],
               fill: true,
               backgroundColor:['rgb(2,71,94,0.6)']
-        }]
+        },
+        {
+
+            data:AVG, // Avg-data
+            borderColor: '#cf0000',
+            label:'AVG',
+            elements:{
+            line:{
+                borderWidth:1.5
+            },
+            point:{
+                radius:0
+            }
+        }
+            
+        }
+    ]
     }
     const options={
         scales: {
             x: {
                 title: {
                     display: true,
-                    text: 'X-Label',
+                    text: 'Time',
                     color: 'black',
                     
                 },
@@ -26,7 +62,7 @@ const PieChart = () => {
             y: {
                 title: {
                     display: true,
-                    text: 'Y-Label',
+                    text: 'Power',
                     color: 'black',
                 },
             }
@@ -34,7 +70,7 @@ const PieChart = () => {
         plugins:{
             title:{
             display:true,
-            text:'January 2021',
+            text:'Power V/S Time',
             font:{
                 size:15
             }

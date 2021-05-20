@@ -6,7 +6,6 @@ import Card from './Card/Card'
 import Line from './LineChart/LineChart'
 import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
-
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const ref_el = useRef(0)
     const [machine_params, setmachine_params] = useState({
@@ -19,6 +18,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     })
     const [time, settime] = useState('')
     const [issues, setissues] = useState(new Set([]))
+    const [History, setHistory] = useState([])
     useEffect(() => {
         const get_data = async () => {
             const response = await axios.post('/get-machine-params', {
@@ -26,7 +26,8 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 machine_id: machine_id
             })
             if (response.data !== false) {
-                if (response.data.power < 50) {
+                setHistory(response.data);
+                if (response.data[0].power < 50) {
                     ref_el.current.style.backgroundColor = 'red'
                     await axios.put('/update-downtime', {
                         user_id: user,
@@ -36,7 +37,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     setissues(new Set(["No Power"]))
                     settime('00:00:00')
                 }
-                else if (response.data.power > 50 && response.data.power<80) {
+                else if (response.data[0].power > 50 && response.data[0].power<80) {
                     setissues(new Set([]))
                     ref_el.current.style.backgroundColor = 'rgb(36, 233, 69)'
                     const prev = await axios.post('/get-downtime', {
@@ -46,7 +47,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
                     settime(timeConverter(diff))
                 }
-                else if (response.data.power > 80) {
+                else if (response.data[0].power > 80) {
                     setissues(new Set(["High Power Consumption"]))
                     const prev = await axios.post('/get-downtime', {
                         user_id: user,
@@ -58,11 +59,11 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 }
 
                 setmachine_params(
-                    response.data
+                    response.data[0]
                 )
             }
         }
-        const clear = setInterval(() => get_data(), 3500)
+        const clear = setInterval(() => get_data(), 3000)
         return () => clearInterval(clear)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [machine_id, user])
@@ -76,7 +77,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
                     /> <h3>Oil Quality Indicator</h3><GaugeChart oil_percent={machine_params.oil_quality} /></div>
-                <div className={`${styles.Grid_line} ${styles.Report}`}> <h3>Past Report </h3><Line /></div>
+                <div className={`${styles.Grid_line} ${styles.Report}`}> <h3>Power Consumption History </h3>{History.length!==0?(<Line history={History}/>):null}</div>
                 <div className={`${styles.Grid_line} ${styles.Report_2}`}> <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h2>{machine_params.temperature}&deg; C</h2> </div>
                 <div className={`${styles.Grid_line} ${styles.Power}`}>
                     <h3>Power Consumption</h3>
@@ -85,7 +86,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 style={{ marginTop: '0', marginBottom: '2%' }} >Realtime Vibrational Analysis</h3>
                     <div className={styles.Locations}>
                         {locations.map((el, i) =>
-                            <Card key={i * 81} location_id={el} machine_id={machine_id} />
+                            <Card key={i * 99} location_id={el} machine_id={machine_id} />
                         )}
                     </div>
                 </div>

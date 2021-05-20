@@ -92,11 +92,13 @@ app.post('/get-machine-params',async(req,res)=>{
   try {
     const user_id=req.body.user
     const machine_id=req.body.machine_id
-    const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 1`,[user_id,machine_id])
+    const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 100`,[user_id,machine_id])
     if (params.rows.length==0){
       res.json(false)
     }
-    res.send(params.rows[0]) 
+    else{
+    res.json(params.rows)
+    } 
   } catch (error) {
     console.error(error.message)
   }
