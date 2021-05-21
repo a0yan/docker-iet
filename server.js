@@ -3,7 +3,7 @@ require('dotenv').config()
 const express=require("express")
 const passport=require("passport")
 const bcrypt=require("bcrypt")
-const pool=require("./db")
+const pool=require("./db").client1
 const jwtG=require("./utils/jwtgenerator")
 const jwt=require("jsonwebtoken");
 const cors=require('cors');
@@ -58,14 +58,7 @@ app.post('/get-data',async (req,res)=>{
     const location_id=parseInt((req.body.location_id))
     const machine_id=parseInt((req.body.machine_id))
     const user_id=req.body.user
-    const db_data=await pool.query(`select d.frequency,d.amplitude,d.phase,d.acceleration,d."time",d."timestamp"
-    from users as u
-    inner join user_machine_location as uml  
-    on u.user_id=uml.user_id 
-    inner join datatable as d 
-    on u.user_id = d.data_id
-    where d.machine_id=$1 and d.location_id=$2 and d.data_id=$3
-    order by d."timestamp"  desc limit 1`,[machine_id,location_id,user_id])
+    const db_data=await pool.query(`select frequency,amplitude,phase,acceleration,time from datatable where user_id=$1 and machine_id=$2 and location_id=$3 order by timestamp desc limit 1`,[user_id,machine_id,location_id])
     if (db_data.rows.length===0){
       res.status(202).json(null)
     }
@@ -81,8 +74,8 @@ app.post('/get-data',async (req,res)=>{
 app.get('/get-machine',async(req,res)=>{
   const user_id=req.headers.user
   try {
-    const data=await pool.query('SELECT * FROM user_machine_location where user_id=$1;',[user_id])
-    res.json({machine_data:data.rows[0].machine_id,location_data:data.rows[0].location_id})  
+    const data=await pool.query('SELECT * FROM users where user_id=$1;',[user_id])
+    res.json({machine_data:data.rows[0].machines,location_data:data.rows[0].locations})  
   } catch (error) {
     console.error(error.message);
   }
@@ -135,15 +128,14 @@ app.post('/get-downtime',async(req,res)=>{
 app.post('/register',async(req,res)=>{
   try{
     const {email,password,machine,location}=req.body
-    const user= await pool.query("SELECT * FROM users WHERE user_email= $1",[email])
+    const user= await pool.query("SELECT * FROM users WHERE email= $1",[email])
     if(user.rows.length!==0){
       res.status(401).send("User Already Exists")
     }
     const saltRounds=10
     const salt=await bcrypt.genSalt(saltRounds)
     const bcryptPassword=await bcrypt.hash(password,salt)
-    const new_user=await pool.query("INSERT INTO users (user_email,user_password) VALUES($1,$2) RETURNING * ",[email,bcryptPassword])
-    await pool.query("INSERT INTO user_machine_location (user_id,machine_id,location_id) VALUES ($1,$2,$3)",[new_user.rows[0].user_id,machine,location])
+    const new_user=await pool.query("INSERT INTO users (email,password,machines,locations) VALUES($1,$2,$3,$4) RETURNING * ",[email,bcryptPassword,machine,location])
     const token=jwtG(new_user.rows[0].user_id)
     const user_id=(new_user.rows[0].user_id)
     res.send({token,user_id})
@@ -160,11 +152,11 @@ app.post('/register',async(req,res)=>{
 app.post('/login',async(req,res)=>{
   try{
     const {email,password}=req.body
-    const user=await pool.query("SELECT * FROM users WHERE user_email=$1",[email])
+    const user=await pool.query("SELECT * FROM users WHERE email=$1",[email])
     if(user.rows.length==0){
       return res.status(401).send("User Does Not Exist")
     }
-    const validPassword=await bcrypt.compare(password,user.rows[0].user_password)
+    const validPassword=await bcrypt.compare(password,user.rows[0].password)
     if(!validPassword){
       return res.status(401).send("Incorrect Password")
     }

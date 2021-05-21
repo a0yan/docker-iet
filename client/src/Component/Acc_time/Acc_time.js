@@ -46,7 +46,8 @@ const Acc_time = (props) => {
             
         }
     }
-    const clear=setInterval(()=>getData(),5000)   // Re runs the fetching of data after every 5 sec or 5000 ms
+    getData()
+    const clear=setInterval(()=>getData(),1800)   // Re runs the fetching of data after every 5 sec or 5000 ms
     return ()=>clearInterval(clear) // Clears the Interval when Component Unmounts
         
     }, [props,Nodata])

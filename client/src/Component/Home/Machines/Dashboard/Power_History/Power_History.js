@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react'
 import {Line} from 'react-chartjs-2' 
-const PieChart = ({history}) => {
+const PowerHistory = ({history}) => {
     const [X, setX] = useState([])
     const [Y, setY] = useState([])
     const [AVG,setAVG]=useState([])
@@ -19,7 +19,6 @@ const PieChart = ({history}) => {
         setX(time)
         setAVG(AVG_data)
     }, [history,Y.length])
-    console.log(X,Y);
     const data={
         labels:X,
         datasets:[{
@@ -84,4 +83,4 @@ const PieChart = ({history}) => {
     )
 }
 
-export default PieChart
+export default PowerHistory

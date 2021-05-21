@@ -2,10 +2,10 @@
 .Button{
     border-radius: 5px;
     background-color:#74c69d;
-    margin-top:1.8%;
+    margin-top:10px;
     display: flex;
     flex-wrap: wrap;
-    width: 30%;
+    width: 80px;
     justify-content: center;
     align-items: center;
     outline: none;
@@ -25,7 +25,7 @@
     flex-direction: column;
     border-radius: 10px;
     width: 33%;
-    height: 150%;
+    height: 110%;
     background-color: #4361ee;
 }
 .Heading{

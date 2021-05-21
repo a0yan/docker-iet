@@ -3,7 +3,7 @@ import styles from './Dashboard.module.css'
 import GaugeChart from './GaugeChart/GaugeChart'
 import GaugeChart2 from './GaugeChart2/GaughChart2'
 import Card from './Card/Card'
-import Line from './LineChart/LineChart'
+import PowerHistory from './Power_History/Power_History'
 import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
 const Dashboard = ({ heading, user, machine_id, locations }) => {
@@ -77,7 +77,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
                     /> <h3>Oil Quality Indicator</h3><GaugeChart oil_percent={machine_params.oil_quality} /></div>
-                <div className={`${styles.Grid_line} ${styles.Report}`}> <h3>Power Consumption History </h3>{History.length!==0?(<Line history={History}/>):null}</div>
+                <div className={`${styles.Grid_line} ${styles.Report}`}> <h3>Power Consumption History </h3>{History.length!==0?(<PowerHistory history={History}/>):null}</div>
                 <div className={`${styles.Grid_line} ${styles.Report_2}`}> <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h2>{machine_params.temperature}&deg; C</h2> </div>
                 <div className={`${styles.Grid_line} ${styles.Power}`}>
                     <h3>Power Consumption</h3>

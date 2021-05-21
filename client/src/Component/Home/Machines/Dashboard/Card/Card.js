@@ -6,9 +6,9 @@ const Card = ({ machine_id, location_id}) => {
         <div className={styles.Card}>
             <h4 className={styles.Heading}>Location {location_id}</h4>
             <div className={styles.Links}>
-                <button className={styles.Button}><a target="_blank" rel="noopener noreferrer" href={`/freq_amp?machine=${machine_id}&location=${location_id}`}>FFT</a></button>
-                <button className={styles.Button}><a target="_blank" rel="noopener noreferrer" href={`/freq_phase?machine=${machine_id}&location=${location_id}`}>Phase</a></button>
-                <button className={styles.Button}><a target="_blank" rel="noopener noreferrer" href={`/acc_time?machine=${machine_id}&location=${location_id}`}>Time History</a></button>
+                <a target="_blank" rel="noopener noreferrer" href={`/freq_amp?machine=${machine_id}&location=${location_id}`}><button className={styles.Button}>FFT</button></a>
+                <a target="_blank" rel="noopener noreferrer" href={`/freq_phase?machine=${machine_id}&location=${location_id}`}><button className={styles.Button}>Phase</button></a>
+                <a target="_blank" rel="noopener noreferrer" href={`/acc_time?machine=${machine_id}&location=${location_id}`}><button className={styles.Button}>Time History</button></a>
             </div>
         </div>
     )

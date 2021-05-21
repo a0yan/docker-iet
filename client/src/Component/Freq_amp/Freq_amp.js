@@ -8,11 +8,12 @@ const Freq_acc = (props) => {
     const [AVG, setAVG] = useState([]) // Avg  as a list
     const [TIMESTAMP,setTIME]=useState(null) // Timestamp of the data
     const [Nodata,setNodata]=useState(false) // To check if data is recieved or not in the front end
+    const [Benchmark, setBenchmark] = useState(0)
+    const [Ratios, setRatios] = useState([])
     useEffect(() => {
         const getData=async()=>{
             // To retrieve the data from the backend by sending user_id,machine_id
             // and location_id to uniquely idetify the required data 
-            console.log(props.location.search);
             const params=qs.parse(props.location.search)   // Parse the machine_id and location_id from the url search params 
             const machine_id=params.machine
             const location_id=params.location
@@ -31,23 +32,28 @@ const Freq_acc = (props) => {
                 avg=avg+(parseFloat(el)/l)                                  // Converting the data from a string and also calculating average value
                 return parseFloat(el)
             })
+            await setBenchmark(12*avg)
             const indtime=new Date (response.data.timestamp)
             const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"}) // Changing timezone from GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
+            const peaks=Y_data.filter((el)=>el>=Benchmark)
+            const first_el=peaks[0]
+            const ratios=peaks.map((item)=>Math.round(item/first_el))
             setY(Y_data)
-        
-             setAVG(AVG_data)
+            setRatios(ratios)
+            setAVG(AVG_data)
            }
            else{
                setNodata(true)
            }
         }
-        const clear=setInterval(()=>getData(),5000)
+        
+        const clear=setInterval(()=>getData(),1800)
         return ()=>clearInterval(clear)
         
-    }, [props])
+    }, [props,Benchmark])
     let data=null
     if (X.length!==0 && Y.length!==0){
          data={
@@ -55,7 +61,18 @@ const Freq_acc = (props) => {
             datasets:[{
                 data:Y,  // Y-data
                 borderColor: '#202060',
-                label:'Machine 1'
+                label:'Machine 1',
+                elements:{
+                point:{
+                    radius:3,
+                    pointStyle:function(context){
+                        var index=context.dataIndex
+                        var value=context.dataset.data[index]
+                        return value>=Benchmark?'star':'circle'
+
+                    }
+                }
+            }
             },{
 
                 data:AVG, // Avg-data
@@ -63,7 +80,7 @@ const Freq_acc = (props) => {
                 label:'Average',
                 elements:{
                 line:{
-                    borderWidth:1.5
+                    borderWidth:2
                 },
                 point:{
                     radius:0
