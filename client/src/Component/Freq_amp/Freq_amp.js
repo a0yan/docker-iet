@@ -32,7 +32,7 @@ const Freq_acc = (props) => {
                 avg=avg+(parseFloat(el)/l)                                  // Converting the data from a string and also calculating average value
                 return parseFloat(el)
             })
-            await setBenchmark(12*avg)
+            await setBenchmark(8*avg)
             const indtime=new Date (response.data.timestamp)
             const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"}) // Changing timezone from GMT to IST
             setTIME(new_time)
@@ -68,7 +68,7 @@ const Freq_acc = (props) => {
                     pointStyle:function(context){
                         var index=context.dataIndex
                         var value=context.dataset.data[index]
-                        return value>=Benchmark?'star':'circle'
+                        return value>=Benchmark?'star':'none'
 
                     }
                 }
