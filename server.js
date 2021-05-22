@@ -58,7 +58,7 @@ app.post('/get-data',async (req,res)=>{
     const location_id=parseInt((req.body.location_id))
     const machine_id=parseInt((req.body.machine_id))
     const user_id=req.body.user
-    const db_data=await pool.query(`select frequency,amplitude,phase,acceleration,time from datatable where user_id=$1 and machine_id=$2 and location_id=$3 order by timestamp desc limit 1`,[user_id,machine_id,location_id])
+    const db_data=await pool.query(`select frequency,amplitude,phase,acceleration,time,timestamp from datatable where user_id=$1 and machine_id=$2 and location_id=$3 order by timestamp desc limit 1`,[user_id,machine_id,location_id])
     if (db_data.rows.length===0){
       res.status(202).json(null)
     }
