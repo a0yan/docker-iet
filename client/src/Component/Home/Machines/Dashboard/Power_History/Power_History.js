@@ -13,7 +13,7 @@ const PowerHistory = ({history}) => {
         })
         const AVG_data=new Array(len).fill(avg)
         const time=history.slice().reverse().map((el,i)=>{
-            return new Date(el.timestamp).toLocaleTimeString()
+            return new Date(el.timestamp).toTimeString().slice(0,-30)
         })
         setY(power)
         setX(time)

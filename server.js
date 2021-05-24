@@ -3,7 +3,7 @@ require('dotenv').config()
 const express=require("express")
 const passport=require("passport")
 const bcrypt=require("bcrypt")
-const pool=require("./db").client1
+const pool=require("./db")
 const jwtG=require("./utils/jwtgenerator")
 const jwt=require("jsonwebtoken");
 const cors=require('cors');
