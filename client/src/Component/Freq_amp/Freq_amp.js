@@ -4,12 +4,10 @@ import axios from 'axios'
 import qs from 'query-string'
 const Freq_acc = (props) => {
     const [X, setX] = useState([]) // X-coordinate as a list
-    const [Y, setY] = useState([]) // Y-coordinate as a list
-    const [AVG, setAVG] = useState([]) // Avg  as a list
+    const [Data, setData] = useState([]) // All Y-axis data
     const [TIMESTAMP,setTIME]=useState(null) // Timestamp of the data
     const [Nodata,setNodata]=useState(false) // To check if data is recieved or not in the front end
     const [Benchmark, setBenchmark] = useState(0)
-    const [Ratios, setRatios] = useState([])
     useEffect(() => {
         const getData=async()=>{
             // To retrieve the data from the backend by sending user_id,machine_id
@@ -32,34 +30,52 @@ const Freq_acc = (props) => {
                 avg=avg+(parseFloat(el)/l)                                  // Converting the data from a string and also calculating average value
                 return parseFloat(el)
             })
-            await setBenchmark(8*avg)
+            await setBenchmark(4*avg)
+            let first=null
+            const ratios=Y_data.map((el,index)=>{
+                if(el>=Benchmark && first===null){
+                    first=X_data[index]
+                    return 1
+                }
+                else if (el>=Benchmark){
+                    return X_data[index]/first
+                }
+                else{
+                    return null
+                }
+            })
             const indtime=new Date (response.data.timestamp)
             const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"}) // Changing timezone from GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
-            const peaks=Y_data.filter((el)=>el>=Benchmark)
-            const first_el=peaks[0]
-            const ratios=peaks.map((item)=>Math.round(item/first_el))
-            setY(Y_data)
-            setRatios(ratios)
-            setAVG(AVG_data)
+            
+            const data_map=X_data.map((el,index)=>{
+                return {
+                    x:el,
+                    y:Y_data[index],
+                    avg:AVG_data[index],
+                    ratios:ratios[index]
+
+                }
+            })
+            setData(data_map)
            }
            else{
                setNodata(true)
            }
         }
-        
-        const clear=setInterval(()=>getData(),1800)
+        getData()
+        const clear=setInterval(()=>getData(),3500)
         return ()=>clearInterval(clear)
         
     }, [props,Benchmark])
     let data=null
-    if (X.length!==0 && Y.length!==0){
+    if (X.length!==0 && Data.length!==0){
          data={
             labels:X,  // X-data
             datasets:[{
-                data:Y,  // Y-data
+                data:Data,  // Y-data
                 borderColor: '#202060',
                 label:'Machine 1',
                 elements:{
@@ -67,15 +83,19 @@ const Freq_acc = (props) => {
                     radius:3,
                     pointStyle:function(context){
                         var index=context.dataIndex
-                        var value=context.dataset.data[index]
+                        var value=context.dataset.data[index].y
                         return value>=Benchmark?'star':'none'
 
                     }
-                }
+                },
+                parsing: {
+                    xAxisKey: 'x',
+                    yAxisKey: 'y'
+                },
             }
             },{
 
-                data:AVG, // Avg-data
+                data:Data, // Avg-data
                 borderColor: '#cf0000',
                 label:'Average',
                 elements:{
@@ -85,8 +105,34 @@ const Freq_acc = (props) => {
                 point:{
                     radius:0
                 }
+            },
+            parsing: {
+                xAxisKey: 'x',
+                yAxisKey: 'avg'
             }
                 
+            },{
+
+                data:Data,
+                backgroundColor:'white',
+                type:'scatter',
+                label:"Ratio to 1st Peak",
+                parsing: {
+                    xAxisKey: 'x',
+                    yAxisKey: 'ratios'
+                },
+                plugins:{
+                    legend:{
+                        display:false
+                    }
+                },
+                elements:{
+                    point:{
+                        radius:0
+                    }
+                }
+
+
             }]
         }
 
@@ -130,7 +176,8 @@ const Freq_acc = (props) => {
                     font: {
                         size: 18
                     }
-                }
+                },
+                display:true
             }
         },
         layout: {
@@ -139,12 +186,15 @@ const Freq_acc = (props) => {
         elements:{
             line:{borderWidth:1}
         },
+        interaction:{
+            mode:'index'
+        }
     }
     return (
 
         <div style={{backgroundColor:'white',textAlign:'center',padding:'2%'}}>
             {TIMESTAMP!==null?<span>{TIMESTAMP.slice(0,-2)}</span>:null}
-            {(X.length!==0 && Y.length!==0)?<Line data={data} options={options} /> :null}
+            {(X.length!==0 && Data.length!==0)?<Line data={data} options={options} /> :null}
             {Nodata?(<h2>Sorry No Data Found !!!</h2>):null}
 
         </div>
