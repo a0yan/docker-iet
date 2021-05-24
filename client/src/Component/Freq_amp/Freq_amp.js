@@ -45,7 +45,7 @@ const Freq_acc = (props) => {
                 }
             })
             const indtime=new Date (response.data.timestamp)
-            const new_time=indtime.toString() // Changing timezone from GMT to IST
+            const new_time=indtime.toLocaleString() // Changing timezone from GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
@@ -193,7 +193,7 @@ const Freq_acc = (props) => {
     return (
 
         <div style={{backgroundColor:'white',textAlign:'center',padding:'2%'}}>
-            {TIMESTAMP!==null?<span>{TIMESTAMP.slice(0,-30)}</span>:null}
+            {TIMESTAMP!==null?<span>{TIMESTAMP}</span>:null}
             {(X.length!==0 && Data.length!==0)?<Line data={data} options={options} /> :null}
             {Nodata?(<h2>Sorry No Data Found !!!</h2>):null}
 
