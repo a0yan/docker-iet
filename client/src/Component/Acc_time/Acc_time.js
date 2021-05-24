@@ -34,7 +34,7 @@ const Acc_time = (props) => {
                 return parseFloat(el)
             })
             const indtime=new Date (response.data.timestamp)
-            const new_time=indtime.toLocaleString(undefined,{timezone:"Asia/Kolkata"}) //Converting GMT to IST
+            const new_time=indtime.toLocaleString('en-UK',{timeZone:'Asia/Kolkata'}) //Converting GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)         // Setting respective data in the array
@@ -129,7 +129,7 @@ const Acc_time = (props) => {
     return (
 
         <div style={{textAlign:'center',padding:'2%',backgroundColor:'white'}}>
-            {TIMESTAMP!==null?<span>{TIMESTAMP.slice(0,-2)}</span>:null} 
+            {TIMESTAMP!==null?<span>{TIMESTAMP}</span>:null} 
             {(X.length!==0 && Y.length!==0)?<Line data={data} options={options} />:null}
             {Nodata?(<h2>Sorry No Data Found !!!</h2>):null} 
             
