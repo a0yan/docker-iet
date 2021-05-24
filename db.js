@@ -6,7 +6,7 @@ try {
       ssl: { rejectUnauthorized: false }
     })
   const client2=new Client({
-    connectionString:'postgres://djkifirajiwjbh:e4ab0bc607c1957eced36ac82c351ee49ace6a63f336653b6c882201f95bded5@ec2-54-160-96-70.compute-1.amazonaws.com:5432/d3c0p2cdmc5s8u',
+    connectionString:'postgres://xrgujyqzcpnbly:507c3fb4fb12706221fe78bbd01e298edc4123a427bbb43ff06296461018fc08@ec2-3-214-136-47.compute-1.amazonaws.com:5432/d6pffng4fofng6',
     ssl:{rejectUnauthorized:false}
   })
   client2.connect()
