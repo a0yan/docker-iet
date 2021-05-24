@@ -45,7 +45,7 @@ const Freq_acc = (props) => {
                 }
             })
             const indtime=new Date (response.data.timestamp)
-            const new_time=indtime.toLocaleString() // Changing timezone from GMT to IST
+            const new_time=indtime.toLocaleString('en-UK',{timeZone:'Asia/Kolkata'}) // Changing timezone from GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)
             setX(X_data)
