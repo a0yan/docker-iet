@@ -32,7 +32,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     await axios.put('/update-downtime', {
                         user_id: user,
                         machine_id: machine_id,
-                        time: new Date().toLocaleString()
+                        time: new Date()
                     })
                     setissues(new Set(["No Power"]))
                     settime('00:00:00')
