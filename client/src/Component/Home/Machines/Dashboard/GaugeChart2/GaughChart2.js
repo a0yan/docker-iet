@@ -1,6 +1,6 @@
 import React from 'react'
 import GaugeChart from 'react-gauge-chart'
-const GaugeChart2 = ({power}) => {
+const GaugeChart2 =({power}) => {
     power=power/100
     return (
         <div>
