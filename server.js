@@ -85,12 +85,17 @@ app.post('/get-machine-params',async(req,res)=>{
   try {
     const user_id=req.body.user
     const machine_id=req.body.machine_id
+    const daily_avg= await pool.query(`SELECT daily_avg_power,"timestamp" FROM daily_avg WHERE user_id=$1 AND machine_id=$2 LIMIT 100`,[user_id,machine_id])
+    const hourly_avg=await pool.query(`SELECT hourly_avg_power,"timestamp" FROM hourly_avg WHERE user_id=$1 AND machine_id=$2 LIMIT 100`,[user_id,machine_id])
     const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 100`,[user_id,machine_id])
     if (params.rows.length==0){
       res.json(false)
     }
     else{
-    res.json(params.rows)
+    res.json({data:params.rows,
+    hourly_avg:hourly_avg.rows,
+    daily_avg:daily_avg.rows
+    })
     } 
   } catch (error) {
     console.error(error.message)
