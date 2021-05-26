@@ -23,7 +23,7 @@ const Machines = ({user}) => {
             <h1 className={styles.Heading}>Your Factory Name</h1>
             <div className={styles.Cards} >
                     <Suspense fallback={<div>Loading...</div>}>
-                    {machines.map((el, i) => <Dashboard key={i*25} locations={locations} user={user}  machine_id={i+1} heading={el} />)}
+                    {machines.map((el, i) => <Dashboard key={(i+1)*279} locations={locations} user={user}  machine_id={i+1} heading={el} />)}
                     </Suspense>
             </div>
         </div>

@@ -13,7 +13,7 @@
     height: 95vh;
     display: grid;
     grid-gap:15px;
-    grid-template-columns:20vw 25vw 20vw auto;
+    grid-template-columns:14vw 20vw 30vw 21vw;
     grid-template-rows: 30vh 38vh;
     padding:1%;
     background-color: transparent;
@@ -58,24 +58,16 @@ justify-content: center;
    
 
 }
-.Power{
-     grid-row-start: 2;
-    grid-row-end: 3;
-    background: #cae8d5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+
 .Report{
     grid-row-start: 1;
     grid-row-end: 3;
     grid-column-start: 3;
-    grid-column-end: 5;
-    background-color:#ffc996;
+    background-color:#cae8d5;
     display:flex;
     align-items: center;    
 }
-.Report_2{
+.Temperature{
     grid-row-start: 1;
     grid-row-end: 3;
     background-color:#f5c0c0;
@@ -98,4 +90,11 @@ justify-content: center;
 .Issues{
     grid-column-start: 4;
     grid-column-end: 6;
+}
+.Power{
+    grid-row-start: 2;
+   grid-row-end: 3;
+   background: #cae8d5;
+   display: flex;
+   flex-direction: column;
 }
