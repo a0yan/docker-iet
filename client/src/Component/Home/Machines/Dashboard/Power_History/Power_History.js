@@ -90,7 +90,7 @@ const PowerHistory = ({chart_data}) => {
         plugins:{
             title:{
             display:true,
-            text:' Current Power V/S Time',
+            text:'Power Consumption',
             font:{
                 size:15
             }
@@ -130,7 +130,7 @@ const data_h={
         plugins:{
             title:{
             display:true,
-            text: 'Hourly Avg Power V/S Time',
+            text: 'Hourly Power Consumption',
             font:{
                 size:15
             }
@@ -171,7 +171,7 @@ const data_d={
         plugins:{
             title:{
             display:true,
-            text: 'Daily Avg Power V/S Time',
+            text: 'Daily Power Consumption',
             font:{
                 size:15
             }
