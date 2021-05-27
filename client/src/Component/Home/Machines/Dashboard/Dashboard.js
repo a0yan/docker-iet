@@ -148,6 +148,12 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
             ref_el.current.style.backgroundColor = 'rgb(36, 233, 69)'
         }
     }
+    const record_issue=async(event)=>{
+        const response=await axios.post('/record-machine-params',{
+            machine_params:machine_params
+        })
+        console.log(response.data);
+    }
     return (
         <div className={styles.Container}>
             <h2 className={`${styles.Heading}`}>Equipment {heading}</h2>
@@ -177,9 +183,10 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 </div>
                 <div style={{ backgroundColor: 'rgb(36, 233, 69)' }} className={`${styles.Grid_line} ${styles.Issues}`} ref={ref_el} >
                     <h3>Current Issues</h3>
-                    {issues_list.length !== 0 ? issues_list.map(el => <h4>{el}</h4>) : <h4>No Issues</h4>}
+                    {issues_list.length !== 0 ? issues_list.map(el =>(<><span>{el}</span><button className={styles.Button} onClick={(event)=>record_issue(event)}>Record Issue</button></>)) : <h4>No Issues</h4>}
                 </div>
             </div>
+            
         </div>
     )
 }

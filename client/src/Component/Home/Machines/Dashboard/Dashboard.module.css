@@ -90,6 +90,8 @@ justify-content: center;
 .Issues{
     grid-column-start: 4;
     grid-column-end: 6;
+    display: flex;
+    align-items: center;
 }
 .Power{
     grid-row-start: 2;
@@ -97,4 +99,17 @@ justify-content: center;
    background: #cae8d5;
    display: flex;
    flex-direction: column;
+}
+.Button{
+    border: none;
+    margin-top: 1%;
+    background-color: rgb(25, 0, 0,0.2);
+    border: 1px solid black;
+    cursor: pointer;
+    width: 50%;
+    font-size:1.1rem;
+    border-radius: 5px;
+}
+.Button:active{
+    background-color: rgb(25, 0, 0,0);
 }

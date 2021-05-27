@@ -8,6 +8,7 @@ const jwtG=require("./utils/jwtgenerator")
 const jwt=require("jsonwebtoken");
 const cors=require('cors');
 const path=require('path')
+const { error } = require('console')
 const app=express()
 //Middlewares
 app.use(cors())
@@ -128,6 +129,17 @@ app.post('/get-downtime',async(req,res)=>{
     res.send(response.rows[0])
   } catch (error) {
     
+  }
+})
+app.post('/record-machine-params',async(req,res)=>{
+  const machine_params=req.body.machine_params
+  try{
+  await pool.query("INSERT INTO machine_record (process_id,user_id,machine_id,min_oil_level,oil_level,max_oil_level,oil_quality,power,temperature) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+[machine_params.process_id,machine_params.user_id,machine_params.machine_id,machine_params.min_oil_level,machine_params.oil_level,machine_params.max_oil_level,machine_params.oil_quality,machine_params.power,machine_params.temperature])
+res.sendStatus(202)  
+}
+  catch(error){
+    res.send("Record already Exists")
   }
 })
 app.post('/register',async(req,res)=>{
