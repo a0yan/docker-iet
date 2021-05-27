@@ -45,7 +45,7 @@ const Temperature_History = ({chart_data}) => {
             plugins:{
                 title:{
                 display:true,
-                text: 'Current Temperature V/S Time',
+                text: 'Temperature Values',
                 font:{
                     size:15
                 }
