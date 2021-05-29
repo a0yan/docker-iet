@@ -183,7 +183,8 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 </div>
                 <div style={{ backgroundColor: 'rgb(36, 233, 69)' }} className={`${styles.Grid_line} ${styles.Issues}`} ref={ref_el} >
                     <h3>Current Issues</h3>
-                    {issues_list.length !== 0 ? issues_list.map(el =>(<><span>{el}</span><button className={styles.Button} onClick={(event)=>record_issue(event)}>Record Issue</button></>)) : <h4>No Issues</h4>}
+                    {issues_list.length !== 0 ? issues_list.map(el =>(<span>{el}</span>)) : <h4>No Issues</h4>}
+                    {issues_list.length!==0?<button className={styles.Button} onClick={(event)=>record_issue(event)}>Record Issue</button>:null}
                 </div>
             </div>
             
