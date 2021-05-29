@@ -212,12 +212,12 @@ const Freq_acc = (props) => {
     return (
 
         <div style={{ backgroundColor: 'white', textAlign: 'center', padding: '2%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', marginLeft: '10%', flex: '1' }}>{TIMESTAMP !== null ? <span>{TIMESTAMP}</span> : null}</div>
-                <div ref={ref_el} style={{ marginRight: '10px', height: '150px', width: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '15px' }}>
-                    {Imbalance ? <h3>Imbalance</h3> : <h3>No Imbalance</h3>}</div>
-            </div>
+         <div style={{ display: 'flex', justifyContent: 'center', marginLeft: '10%', flex: '1' }}>{TIMESTAMP !== null ? <span>{TIMESTAMP}</span> : null}</div>
             {(X.length !== 0 && Data.length !== 0) ? <Line data={data} options={options} /> : null}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                <div ref={ref_el} style={{ height: '100px', width: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '15px' }}>
+                    {Imbalance ? <h3>Imbalance</h3> : <h3>No Issues</h3>}</div>
+            </div>
             {Nodata ? (<h2>Sorry No Data Found !!!</h2>) : null}
 
         </div>

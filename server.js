@@ -8,7 +8,8 @@ const jwtG=require("./utils/jwtgenerator")
 const jwt=require("jsonwebtoken");
 const cors=require('cors');
 const path=require('path')
-const { error } = require('console')
+const compression=require('compression')
+const enforce=require('express-sslify')
 const app=express()
 //Middlewares
 app.use(cors())
@@ -21,6 +22,8 @@ const port=process.env.PORT || 5000
 if (process.env.NODE_ENV==='production'){
   //server static content
   //npm run build on client
+  app.use(compression())
+  app.use(enforce.HTTPS({ trustProtoHeader: true }))
   app.use(express.static(path.join(__dirname,"client/build")))  
 }
 require('./passport')
