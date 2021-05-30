@@ -158,17 +158,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     if (issues_list.length !== 0) {
         ref_el.current.style.backgroundColor = 'red'
         if (issues_list.length !== ref_count.current) {
-            // addNotification({
-            //     title: 'Warning',
-            //     message: `${[...issues_list]}`,
-            //     theme: 'light',
-            //     native: true // when using native, your OS will handle theming.
-            // })
-            // var options = {
-            //     body: 'Helloooooo',
-            //     icon: 'No Icon'
-            // }
-            // eslint-disable-next-line 
+            ref_count.current=issues_list.length 
             showNotification()
         }
     }
