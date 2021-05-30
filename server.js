@@ -24,7 +24,10 @@ if (process.env.NODE_ENV==='production'){
   //npm run build on client
   app.use(compression())
   app.use(enforce.HTTPS({ trustProtoHeader: true }))
-  app.use(express.static(path.join(__dirname,"client/build")))  
+  app.use(express.static(path.join(__dirname,"client/build"))) 
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'client','build', 'index.html'));
+  }); 
 }
 require('./passport')
 //Routes
@@ -191,9 +194,7 @@ app.post('/login',async(req,res)=>{
 })
 
 // For Front-End Routes --Production
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'client','build', 'index.html'));
-});
+
 
 
 // Listening

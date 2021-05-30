@@ -7,7 +7,7 @@ import PowerHistory from './Power_History/Power_History'
 import TemperatureHistory from './Temperature_History/Temperature_History'
 import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
-import addNotification from 'react-push-notification'
+// import addNotification from 'react-push-notification'
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const ref_el = useRef()
     const ref_count = useRef(0)
@@ -144,12 +144,18 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     if (issues_list.length !== 0) {
         ref_el.current.style.backgroundColor = 'red'
         if(issues_list.length!==ref_count.current){
-        addNotification({
-            title: 'Warning',
-            message: `${[...issues_list]}`,
-            theme: 'darkblue',
-            native: true // when using native, your OS will handle theming.
-        })
+        // addNotification({
+        //     title: 'Warning',
+        //     message: `${[...issues_list]}`,
+        //     theme: 'light',
+        //     native: true // when using native, your OS will handle theming.
+        // })
+        var options = {
+            body: 'Helloooooo',
+            icon: 'No Icon'
+        }
+        // eslint-disable-next-line 
+        var notification = new Notification('Warning', options);
         ref_count.current=issues_list.length
     }
 }
