@@ -8,6 +8,20 @@ import TemperatureHistory from './Temperature_History/Temperature_History'
 import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
 // import addNotification from 'react-push-notification'
+function showNotification() {
+  Notification.requestPermission(function(result) {
+    if (result === 'granted') {
+      navigator.serviceWorker.ready.then(function(registration) {
+        registration.showNotification('Vibration Sample', {
+          body: 'Buzz! Buzz!',
+          icon: '../images/touch/chrome-touch-icon-192x192.png',
+          vibrate: [200, 100, 200, 100, 200, 100, 200],
+          tag: 'vibration-sample'
+        });
+      });
+    }
+  });
+}
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const ref_el = useRef()
     const ref_count = useRef(0)
@@ -25,8 +39,8 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         Low_Power: 0,
         Low_Oil_Level: 0,
         High_Oil_Level: 0,
-        High_Temperature:0,
-        Low_Temperature:0
+        High_Temperature: 0,
+        Low_Temperature: 0
     })
     const [History, setHistory] = useState([])
     useEffect(() => {
@@ -45,53 +59,53 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     Low_Power: 0,
                     Low_Oil_Level: 0,
                     High_Oil_Level: 0,
-                    High_Temperature:0,
-                    Low_Temperature:0
+                    High_Temperature: 0,
+                    Low_Temperature: 0
                 }
-                
+
                 if (response.data.data[0].oil_level < response.data.data[0].min_oil_level) {
-                    new_issues={
+                    new_issues = {
                         ...new_issues,
-                        Low_Oil_Level:1,
-                        High_Oil_Level:0
+                        Low_Oil_Level: 1,
+                        High_Oil_Level: 0
 
                     }
 
                 }
                 else if (response.data.data[0].oil_level > response.data.data[0].max_oil_level) {
-                    new_issues={
+                    new_issues = {
                         ...new_issues,
-                        Low_Oil_Level:0,
-                        High_Oil_Level:1
+                        Low_Oil_Level: 0,
+                        High_Oil_Level: 1
 
                     }
 
                 }
                 else {
-                    new_issues={
+                    new_issues = {
                         ...new_issues,
-                        Low_Oil_Level:0,
-                        High_Oil_Level:0
+                        Low_Oil_Level: 0,
+                        High_Oil_Level: 0
 
                     }
                 }
-                if (response.data.data[0].temperature>80){
-                    new_issues={...new_issues,High_Temperature:1,Low_Temperature:0}
+                if (response.data.data[0].temperature > 80) {
+                    new_issues = { ...new_issues, High_Temperature: 1, Low_Temperature: 0 }
                 }
-                else if(response.data.data[0].temperature<30){
-                    new_issues={...new_issues,Low_Temperature:1,High_Temperature:0}
+                else if (response.data.data[0].temperature < 30) {
+                    new_issues = { ...new_issues, Low_Temperature: 1, High_Temperature: 0 }
                 }
-                else{
-                    new_issues={...new_issues,Low_Temperature:0,High_Temperature:0}
+                else {
+                    new_issues = { ...new_issues, Low_Temperature: 0, High_Temperature: 0 }
                 }
                 if (response.data.data[0].power < 50) {
-                    new_issues={
+                    new_issues = {
                         ...new_issues,
-                        Low_Power:1,
-                        High_Power_Consumption:0
+                        Low_Power: 1,
+                        High_Power_Consumption: 0
 
                     }
-                     axios.put('/update-downtime', {
+                    axios.put('/update-downtime', {
                         user_id: user,
                         machine_id: machine_id,
                         time: new Date()
@@ -100,10 +114,10 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     settime('00:00:00')
                 }
                 else if (response.data.data[0].power >= 50 && response.data.data[0].power <= 80) {
-                    new_issues={
+                    new_issues = {
                         ...new_issues,
-                        Low_Power:0,
-                        High_Power_Consumption:0
+                        Low_Power: 0,
+                        High_Power_Consumption: 0
 
                     }
                     const prev = await axios.post('/get-downtime', {
@@ -115,10 +129,10 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 }
                 else {
 
-                    new_issues={
+                    new_issues = {
                         ...new_issues,
-                        Low_Power:0,
-                        High_Power_Consumption:1
+                        Low_Power: 0,
+                        High_Power_Consumption: 1
 
                     }
                     const prev = await axios.post('/get-downtime', {
@@ -143,31 +157,30 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     const issues_list = Object.keys(issues).filter(el => issues[el] > 0)
     if (issues_list.length !== 0) {
         ref_el.current.style.backgroundColor = 'red'
-        if(issues_list.length!==ref_count.current){
-        // addNotification({
-        //     title: 'Warning',
-        //     message: `${[...issues_list]}`,
-        //     theme: 'light',
-        //     native: true // when using native, your OS will handle theming.
-        // })
-        var options = {
-            body: 'Helloooooo',
-            icon: 'No Icon'
+        if (issues_list.length !== ref_count.current) {
+            // addNotification({
+            //     title: 'Warning',
+            //     message: `${[...issues_list]}`,
+            //     theme: 'light',
+            //     native: true // when using native, your OS will handle theming.
+            // })
+            // var options = {
+            //     body: 'Helloooooo',
+            //     icon: 'No Icon'
+            // }
+            // eslint-disable-next-line 
+            showNotification()
         }
-        // eslint-disable-next-line 
-        var notification = new Notification('Warning', options);
-        ref_count.current=issues_list.length
     }
-}
     else {
         if (ref_el.current !== undefined) {
             ref_el.current.style.backgroundColor = 'rgb(36, 233, 69)'
-            ref_count.current=0
+            ref_count.current = 0
         }
     }
-    const record_issue=async(event)=>{
-        axios.post('/record-machine-params',{
-            machine_params:machine_params
+    const record_issue = async (event) => {
+        axios.post('/record-machine-params', {
+            machine_params: machine_params
         })
     }
     return (
@@ -199,11 +212,11 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 </div>
                 <div style={{ backgroundColor: 'rgb(36, 233, 69)' }} className={`${styles.Grid_line} ${styles.Issues}`} ref={ref_el} >
                     <h3>Current Issues</h3>
-                    {issues_list.length !== 0 ? issues_list.map(el =>(<span>{el}</span>)) : <h4>No Issues</h4>}
-                    {issues_list.length!==0?<button className={styles.Button} onClick={(event)=>record_issue(event)}>Record Issue</button>:null}
+                    {issues_list.length !== 0 ? issues_list.map(el => (<span>{el}</span>)) : <h4>No Issues</h4>}
+                    {issues_list.length !== 0 ? <button className={styles.Button} onClick={(event) => record_issue(event)}>Record Issue</button> : null}
                 </div>
             </div>
-            
+
         </div>
     )
 }
