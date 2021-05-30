@@ -50,10 +50,10 @@ function App(props) {
     <div className="App">
     <Notifications/>
     <div className="Navbar">
-      <img className='Logo' src='./logo.png'  alt="Logo" />
+     <a href='/'> <img className='Logo' src='./logo.png'  alt="Logo" /></a>
       <div className="Options">
-        <div className="Option">About Us</div>
-        <div className="Option">Contact Us</div>
+        <a href='https://www.infiniteendurancetech.com/'><div className="Option">About Us</div></a>
+        <a href='https://www.infiniteendurancetech.com/'><div className="Option">Contact Us</div></a>
         <div className={classes.join(' ')} onClick={logout}>Logout</div>
       </div>
     </div>
