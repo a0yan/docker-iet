@@ -8,14 +8,14 @@ import TemperatureHistory from './Temperature_History/Temperature_History'
 import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
 // import addNotification from 'react-push-notification'
-function showNotification() {
+function showNotification(body) {
   Notification.requestPermission(function(result) {
     if (result === 'granted') {
       navigator.serviceWorker.ready.then(function(registration) {
-        registration.showNotification('Vibration Sample', {
-          body: 'Buzz! Buzz!',
-          icon: '../images/touch/chrome-touch-icon-192x192.png',
+        registration.showNotification('Warning!!', {
+          body: `${body}`,
           vibrate: [200, 100, 200, 100, 200, 100, 200],
+          
           tag: 'vibration-sample'
         });
       });
@@ -158,8 +158,8 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     if (issues_list.length !== 0) {
         ref_el.current.style.backgroundColor = 'red'
         if (issues_list.length !== ref_count.current) {
+            showNotification([...issues_list])
             ref_count.current=issues_list.length 
-            showNotification()
         }
     }
     else {
