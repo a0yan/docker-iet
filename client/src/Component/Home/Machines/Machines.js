@@ -20,7 +20,7 @@ const Machines = ({user}) => {
     }, [user])
     return (
         <div className={styles.Machines}>
-            <h1 className={styles.Heading}>Your Factory Name</h1>
+            <h2 className={styles.Heading}>Your Factory Name</h2>
             <div className={styles.Cards} >
                     <Suspense fallback={<div>Loading...</div>}>
                     {machines.map((el, i) => <Dashboard key={(i+1)*279} locations={locations} user={user}  machine_id={i+1} heading={el} />)}

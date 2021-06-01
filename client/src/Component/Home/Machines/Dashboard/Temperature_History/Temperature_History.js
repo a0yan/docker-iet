@@ -55,7 +55,7 @@ const Temperature_History = ({chart_data}) => {
     
     return (
         <div>
-            <Line data={data} options={options} height={250}/>
+            <Line data={data} options={options} height={280}/>
         </div>
     )
 }

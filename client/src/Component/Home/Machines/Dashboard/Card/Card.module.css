@@ -4,7 +4,6 @@
     background-color:#74bcc6e3;
     margin-top:10px;
     display: flex;
-    flex-wrap: wrap;
     width: 80px;
     justify-content: center;
     align-items: center;
@@ -25,8 +24,9 @@
     flex-direction: column;
     border-radius: 10px;
     width: 33%;
-    height: 110%;
+    height: 100%;
     background-color: #a9f1df;
+    padding-bottom: 10px;
 }
 .Heading{
     margin: 0;
@@ -35,4 +35,18 @@
     display: flex;
     width: 100%;
     justify-content: space-evenly;
+}
+
+@media screen and (max-width:1000px) {
+    .Card{
+        width: 95%;
+        height: 100%;
+        margin: 10px;
+        padding-bottom: 10px;
+    }
+    .Button{
+        display: flex;
+        width: 110px;
+    }
+    
 }

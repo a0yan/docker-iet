@@ -180,7 +180,7 @@ const data_d={
 }
     return (
         <div style={{height:'100%'}}>
-            <Line data={data} options={options}  height={200} style={{marginTop:'5%'}} />
+            <Line data={data} options={options}  height={300} style={{marginTop:'5%'}} />
             <Line data={data_h} options={options_h} height={300} style={{marginTop:'5%'}}/>
             <Line data={data_d} options={options_d} height={300} style={{marginTop:'5%'}}/>
         </div>

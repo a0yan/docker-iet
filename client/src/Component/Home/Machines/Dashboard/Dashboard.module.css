@@ -1,115 +1,154 @@
-.Container{
+.Container {
     margin: 1.2%;
 }
-.Container:nth-of-type(odd){
+
+.Container:nth-of-type(odd) {
     background-color: #e9f1f7;
 }
-.Container:nth-of-type(even){
-    background-color:#d7f9ff;
+
+.Container:nth-of-type(even) {
+    background-color: #d7f9ff;
     color: black;
 }
-.Dashboard{
+
+.Dashboard {
     width: 90vw;
     height: 95vh;
     display: grid;
-    grid-gap:15px;
-    grid-template-columns:14vw 20vw 30vw 21vw;
+    grid-gap: 15px;
+    grid-template-columns: 14vw 20vw 30vw 21vw;
     grid-template-rows: 30vh 38vh;
-    padding:1%;
+    padding: 1%;
     background-color: transparent;
-    
+
 }
 
-.Grid_line{
+.Grid_line {
     /* border: 1px solid rgb(138, 137, 136); */
     display: flex;
     flex-direction: column;
     border-radius: 15px;
     max-height: 100%;
     max-width: 100%;
-    min-width:100%;
+    min-width: 100%;
     min-height: 100%;
-    overflow:auto;
+    overflow: auto;
 }
-.Heading{
-    margin: 0; 
+
+.Heading {
+    margin: 0;
     color: rgba(0, 0, 0, 0.842);
     font-size: 1.6rem;
 }
-.Uptime{
-grid-row-start:1;
-grid-row-end:2;
-background:#78c4d4;
-display: flex;
-align-items: center;
-justify-content: center;
+
+.Uptime {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    background: #78c4d4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.Oil{
-    grid-row-start:1;
-    grid-row-end:3;
+
+.Oil {
+    grid-row-start: 1;
+    grid-row-end: 3;
     grid-column-start: 2;
     grid-column-end: 3;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background:#a8e6cf;
-    justify-content: center;
-    padding: 1%;
-   
+    /* align-items: center; */
+    background: #a8e6cf;
+    /* justify-content: center; */
+    /* padding: 1%; */
+
 
 }
 
-.Report{
+.Report {
     grid-row-start: 1;
     grid-row-end: 3;
     grid-column-start: 3;
-    background-color:#cae8d5;
-    display:flex;
-    align-items: center;    
+    background-color: #cae8d5;
+    display: flex;
+    align-items: center;
+    padding: 1%;
 }
-.Temperature{
+
+.Temperature {
     grid-row-start: 1;
     grid-row-end: 3;
-    background-color:#f5c0c0;
+    background-color: #f5c0c0;
     padding: 1%;
 }
-.Vibrational{
-    grid-column-start:1;
+
+.Vibrational {
+    grid-column-start: 1;
     grid-column-end: 4;
-    background-color:#6f9eaf ;
+    background-color: #6f9eaf;
     overflow-x: auto;
-    justify-content:flex-start;
+    justify-content: flex-start;
     padding: 1%;
-    
+
 }
-.Locations{
+
+.Locations {
     display: flex;
     justify-content: space-between;
 }
 
-.Issues{
+.Issues {
     grid-column-start: 4;
     grid-column-end: 6;
     display: flex;
     align-items: center;
 }
-.Power{
+
+.Power {
     grid-row-start: 2;
-   grid-row-end: 3;
-   background: #cae8d5;
-   display: flex;
-   flex-direction: column;
+    grid-row-end: 3;
+    background: #cae8d5;
+    display: flex;
+    flex-direction: column;
 }
-.Button{
+
+.Button {
     border: none;
     margin-top: 1%;
-    background-color: rgb(25, 0, 0,0.2);
+    background-color: rgb(25, 0, 0, 0.2);
     border: 1px solid black;
     cursor: pointer;
     width: 50%;
-    font-size:1.1rem;
+    font-size: 1.1rem;
     border-radius: 5px;
 }
-.Button:active{
-    background-color: rgb(25, 0, 0,0);
+
+.Button:active {
+    background-color: rgb(25, 0, 0, 0);
+}
+
+@media screen and (max-width:1000px) {
+    .Dashboard {
+        width: 95vw;
+        height: 98vh;
+        display: grid;
+        grid-gap: 10px;
+        grid-template-rows: 25vh 38vh;
+    }
+
+    .Temperature{
+        grid-column-start: 4;
+        grid-column-end: 6;
+    }
+    .Locations{
+        display: flex;
+        flex-direction: column;
+    }
+    .Oil{
+        display: flex;
+        flex-direction: column;
+    }
+    .Report{
+        padding-left: 8%;
+    }
 }

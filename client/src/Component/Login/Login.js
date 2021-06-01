@@ -26,7 +26,7 @@ const Login = ({setAuth,setUser}) => {
         <div className={styles.Login} >
             <h1 className={styles.Heading}> Infinite Endurance Technologies </h1>
             <div className={styles.LoginCard}>
-                <h1>Sign In</h1>
+                <h3>Sign In</h3>
                     <form onSubmit={handleSubmit} className={styles.Content}>
                         <FormInput name='email' type='email' value={userCred.email} label='Email' onChange={handleChange} />
                         <FormInput name='password' type='password' value={userCred.password} label='Password' onChange={handleChange} />

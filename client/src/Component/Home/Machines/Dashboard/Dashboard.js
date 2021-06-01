@@ -187,13 +187,13 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     {History.length !== 0 ? (<PowerHistory chart_data={History} />) : null}
                 </div>
                 <div className={`${styles.Grid_line} ${styles.Temperature}`}>
-                    <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h2>{machine_params.temperature}&deg; C</h2> {History.length !== 0 ? (<TemperatureHistory chart_data={History} />) : null} </div>
+                    <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h3>{machine_params.temperature}&deg; C</h3> {History.length !== 0 ? (<TemperatureHistory chart_data={History} />) : null} </div>
                 <div className={`${styles.Grid_line} ${styles.Power}`}>
                     <h4>Power Consumption</h4>
                     <GaugeChart2 power={machine_params.power} />
                     <span>(KW)</span>
                 </div>
-                <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 style={{ marginTop: '0', marginBottom: '2%' }} >Realtime Vibrational Analysis</h3>
+                <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 style={{ marginTop: '0', marginBottom: '0.2%' }} >Realtime Vibrational Analysis</h3>
                     <div className={styles.Locations}>
                         {locations.map((el, i) =>
                             <Card key={i * 99} location_id={el} machine_id={machine_id} />
