@@ -79,7 +79,7 @@ app.get('/get-machine',async(req,res)=>{
   const user_id=req.headers.user
   try {
     const data=await pool.query('SELECT * FROM users where user_id=$1;',[user_id])
-    res.json({machine_data:data.rows[0].machines,location_data:data.rows[0].locations})  
+    res.json({machine_data:data.rows[0].machines,location_data:data.rows[0].locations,factory_name:data.rows[0].factory_name})  
   } catch (error) {
     console.error(error.message);
   }
@@ -147,7 +147,10 @@ res.sendStatus(202)
 })
 app.post('/register',async(req,res)=>{
   try{
-    const {email,password,machine,location}=req.body
+    const {
+      master_username,master_password,email,password,machine,location
+    }=req.body
+    if(master_username===process.env.MASTER_USERNAME && master_password===process.env.MASTER_PASSWORD){
     const user= await pool.query("SELECT * FROM users WHERE email= $1",[email])
     if(user.rows.length!==0){
       res.status(401).send("User Already Exists")
@@ -160,7 +163,10 @@ app.post('/register',async(req,res)=>{
     const user_id=(new_user.rows[0].user_id)
     res.send({token,user_id})
 
-    
+    }
+    else{
+      res.status(401).send("Master Password or Username is Incorrect")
+    }  
   }catch(err){
     console.error(err.message)
     res.status(500).send("Server Error")

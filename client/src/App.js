@@ -4,7 +4,6 @@ import React, { useState,useEffect,lazy,Suspense } from 'react';
 import axios from 'axios'
 import Login from './Component/Login/Login';
 import {Redirect, Route,Switch} from 'react-router-dom'
-import {Notifications} from 'react-push-notification'
 const Home=lazy(()=>import('./Component/Home/Home'));
 const FreqAmp=lazy(()=>import('./Component/Freq_amp/Freq_amp'))
 const FreqPhase=lazy(()=>import('./Component/Freq_phase/Freq_phase'));
@@ -48,7 +47,6 @@ function App(props) {
   }
   return (
     <div className="App">
-    <Notifications/>
     <div className="Navbar">
      <a href='/'> <img className='Logo' src='./logo.png'  alt="Logo" /></a>
       <div className="Options">

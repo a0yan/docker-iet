@@ -14,9 +14,9 @@ passport.use(new GoogleStrategy({
   callbackURL: "https://infinite-endurance-tech.herokuapp.com/auth/google/callback"
 },
    async(accessToken, refreshToken, profile, done)=>{
-    const user = await pool.query("SELECT * FROM users WHERE google_id=$1", [profile.id])
+    const user = await pool.query("SELECT * FROM users WHERE user_id=$1", [profile.id])
     if (user.rows.length == 0) {
-      const user = await pool.query("INSERT INTO users (google_id) VALUES($1) RETURNING *", [profile.id])
+      const user = await pool.query("INSERT INTO users (user_id) VALUES($1) RETURNING *", [profile.id])
     }
     const userData = {
       google_id: profile.id,
