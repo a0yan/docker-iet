@@ -11,7 +11,7 @@ const Forminput = (props) => {
     return (
         <div className={styles.group}>
             {label}
-            <input className={styles.form_input} onChange={props.mc} {...props} />
+            <input className={styles.form_input}  {...props} />
         </div>
     )
 }

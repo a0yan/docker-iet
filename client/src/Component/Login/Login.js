@@ -3,7 +3,7 @@ import styles from './Login.module.css'
 import FormInput from '../Forminput/Forminput'
 import axios from 'axios'
 const Login = ({ setAuth, setUser }) => {
-    const [userCred, setuserCred] = useState({ email: '', password: '' })
+    const [userCred, setuserCred] = useState({ email: 'sample@sample.com', password: '5678' })
     const [error, seterror] = useState(false)
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -32,15 +32,19 @@ const Login = ({ setAuth, setUser }) => {
         }
 
     }
+    const clearInput=()=>{
+        console.log("Fired");
+        setuserCred({email:'',password:''})
+    }
     return (
         <div className={styles.Login} >
             <h1 className={styles.Heading}> Infinite Endurance Technologies </h1>
-            <div className={styles.LoginCard}>
+            <div className={styles.LoginCard}  >
                 {error ? (<div className={styles.Error}>Invalid Email or Password</div>) : null}
                 <h3>Sign In</h3>
                 <form onSubmit={handleSubmit} className={styles.Content}>
-                    <FormInput name='email' type='email' value={userCred.email} label='Email' onChange={handleChange} />
-                    <FormInput name='password' type='password' value={userCred.password} label='Password' onChange={handleChange} />
+                    <FormInput name='email' type='email' value={userCred.email} label='Email' onChange={handleChange} onClick={clearInput} />
+                    <FormInput  name='password' type='password' value={userCred.password} label='Password' onChange={handleChange} onClick={clearInput} />
                     <div className={styles.Wrapper}>
                         <button className={styles.Button} onClick={handleSubmit}> Login In </button>
                     </div>
