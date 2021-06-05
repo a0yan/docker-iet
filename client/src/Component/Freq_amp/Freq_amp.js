@@ -2,50 +2,83 @@ import { React, useEffect, useState, useRef } from 'react'
 import { Line } from 'react-chartjs-2'
 import axios from 'axios'
 import qs from 'query-string'
+const convert_to_float=(el)=>parseFloat(el)
 const Freq_acc = (props) => {
     const [X, setX] = useState([]) // X-coordinate as a list
     const [Data, setData] = useState([]) // All Y-axis data
     const [TIMESTAMP, setTIME] = useState(null) // Timestamp of the data
     const [Nodata, setNodata] = useState(false) // To check if data is recieved or not in the front end
     const [Benchmark, setBenchmark] = useState(0)
-    const [Imbalance, setImbalance] = useState(false)
+    const [Imbalance, setImbalance] = useState(null)
     const ref_el = useRef()
+
     useEffect(() => {
         const getData = async () => {
             // To retrieve the data from the backend by sending user_id,machine_id
-            // and location_id to uniquely idetify the required data 
+            // and location_id to uniquely idetify the required data
             const params = qs.parse(props.location.search)   // Parse the machine_id and location_id from the url search params 
             const machine_id = params.machine
             const location_id = params.location
+            const bearing_number = params.bearing_number
             const response = await axios.post(`/get-data`, {
 
                 user: props.user,
                 machine_id: machine_id,
-                location_id: location_id
-
+                location_id: location_id,
+                bearing_number: bearing_number
+                
             })
-            if (response.data !== null) {
-                const X_data = response.data.frequency.slice(1, -1).split(',').map(el => parseFloat(el)) // Converting the data from a string
+            if (response.data!== null) {
+                const X_data = response.data.db_data.frequency.slice(1, -1).split(',').map(el => parseFloat(el)) // Converting the data from a string
                 let avg = 0                                                                           // of list to a list
-                const l = X_data.length
-                const Y_data = response.data.amplitude.slice(1, -1).split(',').map(el => {
+                const l =X_data.length
+                const Y_data = response.data.db_data.amplitude.slice(1, -1).split(',').map(el => {
                     avg = avg + (parseFloat(el) / l)                                  // Converting the data from a string and also calculating average value
                     return parseFloat(el)
                 })
-                let imbalance=false
-                await setBenchmark(4 * avg)
+                let imbalance = null
+                let {bpfo,bpfi,ftf,bsf}=response.data.bearing_data!==undefined?response.data.bearing_data:Infinity
+                bpfo=convert_to_float(bpfo)
+                bpfi=convert_to_float(bpfi)
+                ftf=convert_to_float(ftf)
+                bsf=convert_to_float(bsf)
+                await setBenchmark(10 * avg)
                 let first = null
                 const ratios = Y_data.map((el, index) => {
                     if (el >= Benchmark && first === null) {
                         first = X_data[index]
                         return 1
                     }
-
                     else if (el >= Benchmark) {
-                        const ratio = X_data[index] / first
-                        if (ratio >=4 && el >= 1700 && first!==0) {
-                            imbalance=true
+                        const ratio = (X_data[index] / first).toFixed(2)
+                        // console.log(ratio);
+                        if (first !== 0) {
                             
+                            if(Math.abs(bpfo-ratio)<=0.05){   //0.05
+                                    imbalance=`BPFO on ${bearing_number} , Please Check`
+                                    
+                            }
+                            if(Math.abs(bpfi-ratio)<=0.05){
+                                    imbalance=`BPFI on ${bearing_number} , Please Check`
+                            
+                            }
+                            if(Math.abs(ftf-ratio)<=0.05){
+                                    imbalance=`FTF on ${bearing_number} , Please Check`
+                                    
+                            }
+                            if(Math.abs(bsf-ratio)<=0.05){
+                                imbalance=`BSF on ${bearing_number} , Please Check`
+                                
+                            }
+                            if(Math.abs(4-ratio)<=0.1){
+                                    imbalance=`Imbalance , Please Check`
+                                    
+                            }
+                            if(Math.abs(8-ratio)<=0.1){
+                                
+                                    imbalance=`Imbalance , Please Check`  
+                            }
+                                
                         }
                         return ratio
 
@@ -54,22 +87,21 @@ const Freq_acc = (props) => {
                         return null
                     }
                 })
-                setImbalance(imbalance)
-                const indtime = new Date(response.data.timestamp)
+                const indtime = new Date(response.data.db_data.timestamp)
                 const new_time = indtime.toLocaleString('en-UK', { timeZone: 'Asia/Kolkata' }) // Changing timezone from GMT to IST
-                setTIME(new_time)
                 const AVG_data = new Array(l).fill(avg)
-                setX(X_data)
-
                 const data_map = X_data.map((el, index) => {
                     return {
                         x: el,
                         y: Y_data[index],
                         avg: AVG_data[index],
                         ratios: ratios[index]
-
+                        
                     }
                 })
+                setX(X_data)
+                setImbalance(imbalance)
+                setTIME(new_time)
                 setData(data_map)
             }
             else {
@@ -201,22 +233,22 @@ const Freq_acc = (props) => {
             mode: 'index'
         }
     }
-    if(ref_el.current!==undefined){
-    if(Imbalance===true){
-        ref_el.current.style.backgroundColor='red'
+    if (ref_el.current !== undefined) {
+        if (Imbalance !== null) {
+            ref_el.current.style.backgroundColor = 'red'
+        }
+        else {
+            ref_el.current.style.backgroundColor = 'rgb(36, 233, 69)'
+        }
     }
-    else{
-        ref_el.current.style.backgroundColor='rgb(36, 233, 69)'
-    }
-}
     return (
 
         <div style={{ backgroundColor: 'white', textAlign: 'center', padding: '2%' }}>
-         <div style={{ display: 'flex', justifyContent: 'center', marginLeft: '10%', flex: '1' }}>{TIMESTAMP !== null ? <span>{TIMESTAMP}</span> : null}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', flex: '1' }}>{TIMESTAMP !== null ? <span>{TIMESTAMP}</span> : null}</div>
             {(X.length !== 0 && Data.length !== 0) ? <Line data={data} options={options} /> : null}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                 <div ref={ref_el} style={{ height: '100px', width: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '15px' }}>
-                    {Imbalance ? <h3>Imbalance</h3> : <h3>No Issues</h3>}</div>
+                    {Imbalance!==null ? <h3>{Imbalance}</h3> : <h3>No Issues</h3>}</div>
             </div>
             {Nodata ? (<h2>Sorry No Data Found !!!</h2>) : null}
 

@@ -65,14 +65,31 @@
         width: 34vw;
         margin-bottom: 10px;
         padding: 1%;
+        max-height: 90vh;
+        max-width: 34vw;
         
     }
+    
     .Heading{
-        padding-top: 10px;
+        padding-top: 0px;
         font-size:large;
     }
     .Content{
         max-width: 170px;
         max-height: 280px;
     }
+    .Wrapper{
+        display: flex;
+        align-items: center;
+        padding: 1px;
+        justify-content: space-between;
+    }
+    .Button{
+        height:40px;
+        width: 90px;
+    }
+    .Content{
+        position: relative;
+    }
+    
 }

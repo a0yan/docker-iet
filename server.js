@@ -10,6 +10,7 @@ const cors=require('cors');
 const path=require('path')
 const compression=require('compression')
 const enforce=require('express-sslify')
+const { json } = require('express')
 const app=express()
 //Middlewares
 app.use(cors())
@@ -62,13 +63,16 @@ app.post('/get-data',async (req,res)=>{
     const location_id=parseInt((req.body.location_id))
     const machine_id=parseInt((req.body.machine_id))
     const user_id=req.body.user
+    const bearing_number=req.body.bearing_number
     const db_data=await pool.query(`select frequency,amplitude,phase,acceleration,time,timestamp from datatable where user_id=$1 and machine_id=$2 and location_id=$3 order by timestamp desc limit 1`,[user_id,machine_id,location_id])
+    const bearing_data=await pool.query('select bpfo,bpfi,ftf,bsf from bearing_ratios where bearing_number=$1',[bearing_number])
+
     if (db_data.rows.length===0){
       res.status(202).json(null)
     }
     else{
       // console.log(db_data.rows[0].phase);
-    res.status(202).json(db_data.rows[0])
+    res.status(202).json({db_data:db_data.rows[0],bearing_data:bearing_data.rows[0]})
     }  
   } catch (error) {
     console.error(error.message)
@@ -79,7 +83,8 @@ app.get('/get-machine',async(req,res)=>{
   const user_id=req.headers.user
   try {
     const data=await pool.query('SELECT * FROM users where user_id=$1;',[user_id])
-    res.json({machine_data:data.rows[0].machines,location_data:data.rows[0].locations,factory_name:data.rows[0].factory_name})  
+    const parsed_data=JSON.parse(data.rows[0].machines)
+    res.json({machine_data:parsed_data,factory_name:data.rows[0].factory_name})  
   } catch (error) {
     console.error(error.message);
   }
@@ -148,17 +153,19 @@ res.sendStatus(202)
 app.post('/register',async(req,res)=>{
   try{
     const {
-      master_username,master_password,email,password,machine,location
+      master_username,master_password,email,password,machines,factory_name
     }=req.body
+    const new_machines=JSON.stringify(machines)
     if(master_username===process.env.MASTER_USERNAME && master_password===process.env.MASTER_PASSWORD){
     const user= await pool.query("SELECT * FROM users WHERE email= $1",[email])
     if(user.rows.length!==0){
       res.status(401).send("User Already Exists")
+      return
     }
     const saltRounds=10
     const salt=await bcrypt.genSalt(saltRounds)
     const bcryptPassword=await bcrypt.hash(password,salt)
-    const new_user=await pool.query("INSERT INTO users (email,password,machines,locations) VALUES($1,$2,$3,$4) RETURNING * ",[email,bcryptPassword,machine,location])
+    const new_user=await pool.query("INSERT INTO users (email,password,machines,factory_name) VALUES($1,$2,$3,$4) RETURNING * ",[email,bcryptPassword,new_machines,factory_name])
     const token=jwtG(new_user.rows[0].user_id)
     const user_id=(new_user.rows[0].user_id)
     res.send({token,user_id})
@@ -171,6 +178,7 @@ app.post('/register',async(req,res)=>{
     console.error(err.message)
     res.status(500).send("Server Error")
   }
+  
 })
 
 

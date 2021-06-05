@@ -15,7 +15,6 @@ function showNotification(body) {
         registration.showNotification('Warning!!', {
           body: `${body}`,
           vibrate: [200, 100, 200, 100, 200, 100, 200],
-          
           tag: 'vibration-sample'
         });
       });
@@ -195,8 +194,8 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 </div>
                 <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 style={{ marginTop: '0', marginBottom: '0.2%' }} >Realtime Vibrational Analysis</h3>
                     <div className={styles.Locations}>
-                        {locations.map((el, i) =>
-                            <Card key={i * 99} location_id={el} machine_id={machine_id} />
+                        {Object.keys(locations).map((el, i) =>
+                            <Card key={i * 99} location_id={el} bearing_number={locations[el]} machine_id={machine_id} />
                         )}
                     </div>
                 </div>
