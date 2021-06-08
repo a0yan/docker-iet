@@ -51,7 +51,6 @@ const Freq_acc = (props) => {
                     }
                     else if (el >= Benchmark) {
                         const ratio = (X_data[index] / first).toFixed(2)
-                        // console.log(ratio);
                         if (first !== 0) {
                             
                             if(Math.abs(bpfo-ratio)<=0.05){   //0.05
@@ -150,18 +149,18 @@ const Freq_acc = (props) => {
                     }
                 },
                 parsing: {
-                    xAxisKey: 'x',
+                    xAxisKey: 'x',   //Graph is plotted against X and AVG
                     yAxisKey: 'avg'
                 }
 
             }, {
 
-                data: Data,
+                data: Data, 
                 backgroundColor: 'white',
                 type: 'scatter',
                 label: "Ratio to 1st Peak",
                 parsing: {
-                    xAxisKey: 'x',
+                    xAxisKey: 'x',         //Graph is plotted against X and Ratios
                     yAxisKey: 'ratios'
                 },
                 plugins: {

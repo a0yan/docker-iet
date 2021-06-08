@@ -2,6 +2,7 @@
 require('dotenv').config()
 const express=require("express")
 const passport=require("passport")
+const axios=require("axios")
 const bcrypt=require("bcrypt")
 const pool=require("./db")
 const jwtG=require("./utils/jwtgenerator")
@@ -10,7 +11,6 @@ const cors=require('cors');
 const path=require('path')
 const compression=require('compression')
 const enforce=require('express-sslify')
-const { json } = require('express')
 const app=express()
 //Middlewares
 app.use(cors())
@@ -94,8 +94,8 @@ app.post('/get-machine-params',async(req,res)=>{
   try {
     const user_id=req.body.user
     const machine_id=req.body.machine_id
-    const daily_avg= await pool.query(`SELECT daily_avg_power,"timestamp" FROM daily_avg WHERE user_id=$1 AND machine_id=$2 LIMIT 100`,[user_id,machine_id])
-    const hourly_avg=await pool.query(`SELECT hourly_avg_power,"timestamp" FROM hourly_avg WHERE user_id=$1 AND machine_id=$2 LIMIT 100`,[user_id,machine_id])
+    const daily_avg= await pool.query(`SELECT daily_avg_power,"timestamp" FROM daily_avg WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" LIMIT 100 `,[user_id,machine_id])
+    const hourly_avg=await pool.query(`SELECT hourly_avg_power,"timestamp" FROM hourly_avg WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" LIMIT 100`,[user_id,machine_id])
     const params=await pool.query(`SELECT * FROM machine_parameters WHERE user_id=$1 AND machine_id=$2 ORDER BY "timestamp" DESC LIMIT 100`,[user_id,machine_id])
     if (params.rows.length==0){
       res.json(false)
@@ -185,7 +185,13 @@ app.post('/register',async(req,res)=>{
 
 app.post('/login',async(req,res)=>{
   try{
-    const {email,password}=req.body
+    const {email,password,token_captcha}=req.body
+    const human=await validateHuman(token_captcha)
+    if(!human){
+      res.status(400)
+      res.json({"error":"Captcha Verification Failed"})
+      return 
+    }
     const user=await pool.query("SELECT * FROM users WHERE email=$1",[email])
     if(user.rows.length==0){
       return res.status(401).send("User Does Not Exist")
@@ -203,6 +209,14 @@ app.post('/login',async(req,res)=>{
     console.error(err.message)
   }
 })
+
+const validateHuman=async(token_captcha)=>{
+  const secret=process.env.CAPTCHA_KEY_SERVER
+  const res=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token_captcha}`,{
+    headers:{ "Content-Type": "application/x-www-form-urlencoded" }
+  })
+  return res.data.success
+}
 
 // For Front-End Routes --Production
 app.get('/*', function (req, res) {

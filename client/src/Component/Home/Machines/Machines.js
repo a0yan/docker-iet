@@ -2,20 +2,21 @@ import React, {useEffect,useState,lazy,Suspense} from 'react'
 import styles from './Machines.module.css'
 import axios from 'axios'
 const Dashboard =lazy(()=> import('./Dashboard/Dashboard'))
-// import Dashboard from './Dashboard/Dashboard'
 const Machines = ({user}) => {
     const [machines, setmachines] = useState([])
     const [factory_name, setfactory_name] = useState("")
     useEffect(() =>{
+        const ourRequest=axios.CancelToken.source()
         const get_machine=async()=>{
         const response=await axios.get('/get-machine',{
-            headers:{user}
+            headers:{user},
+            cancelToken:ourRequest.token
         })
-        // setlocations(response.data.location_data.slice(1,-1).split(','))
         setmachines(response.data.machine_data);
         setfactory_name(response.data.factory_name)
     }
     get_machine()
+    return ()=>{ourRequest.cancel()}
     
     }, [user])
     return (

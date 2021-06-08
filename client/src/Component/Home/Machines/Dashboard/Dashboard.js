@@ -9,17 +9,17 @@ import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
 // import addNotification from 'react-push-notification'
 function showNotification(body) {
-  Notification.requestPermission(function(result) {
-    if (result === 'granted') {
-      navigator.serviceWorker.ready.then(function(registration) {
-        registration.showNotification('Warning!!', {
-          body: `${body}`,
-          vibrate: [200, 100, 200, 100, 200, 100, 200],
-          tag: 'vibration-sample'
-        });
-      });
-    }
-  });
+    Notification.requestPermission(function (result) {
+        if (result === 'granted') {
+            navigator.serviceWorker.ready.then(function (registration) {
+                registration.showNotification('Warning!!', {
+                    body: `${body}`,
+                    vibrate: [200, 100, 200, 100, 200, 100, 200],
+                    tag: 'vibration-sample'
+                });
+            });
+        }
+    });
 }
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const ref_el = useRef()
@@ -43,11 +43,12 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     })
     const [History, setHistory] = useState([])
     useEffect(() => {
+        const ourRequest = axios.CancelToken.source()
         const get_data = async () => {
             const response = await axios.post('/get-machine-params', {
                 user: user,
                 machine_id: machine_id
-            })
+            }, { cancelToken: ourRequest.token })
             if (response.data !== false) {
                 setHistory(response.data);
                 setmachine_params(
@@ -104,11 +105,11 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                         High_Power_Consumption: 0
 
                     }
-                    axios.put('/update-downtime', {
+                    await axios.put('/update-downtime', {
                         user_id: user,
                         machine_id: machine_id,
                         time: new Date()
-                    })
+                    }, { cancelToken: ourRequest.token })
 
                     settime('00:00:00')
                 }
@@ -122,9 +123,9 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     const prev = await axios.post('/get-downtime', {
                         user_id: user,
                         machine_id: machine_id,
-                    })
+                    }, { cancelToken: ourRequest.token })
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
-                    settime(timeConverter(diff))
+                    settime(timeConverter(diff))//  ocnverts seconds in HH:MM:SS
                 }
                 else {
 
@@ -137,7 +138,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     const prev = await axios.post('/get-downtime', {
                         user_id: user,
                         machine_id: machine_id,
-                    })
+                    }, { cancelToken: ourRequest.token })
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
                     settime(timeConverter(diff))
                 }
@@ -146,19 +147,21 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
 
             }
         }
-        get_data()
         const clear = setInterval(() => get_data(), 3000)
-        return () => clearInterval(clear)
+        return () => {
+            ourRequest.cancel()
+            clearInterval(clear)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [machine_id, user])
-    // console.log(machine_params);
+
 
     const issues_list = Object.keys(issues).filter(el => issues[el] > 0)
     if (issues_list.length !== 0) {
-        ref_el.current.style.backgroundColor = 'red'
+        ref_el.current.style.backgroundColor = 'red' // Changes the colour of the issues div-Reference is used instead of state as its value is persisted across re render.
         if (issues_list.length !== ref_count.current) {
             showNotification([...issues_list])
-            ref_count.current=issues_list.length 
+            ref_count.current = issues_list.length
         }
     }
     else {
@@ -167,7 +170,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
             ref_count.current = 0
         }
     }
-    const record_issue = async (event) => {
+    const record_issue = async () => { // Stores the machine parameters on the database in case of any issues if clicked by user
         axios.post('/record-machine-params', {
             machine_params: machine_params
         })
@@ -195,7 +198,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 style={{ marginTop: '0', marginBottom: '0.2%' }} >Realtime Vibrational Analysis</h3>
                     <div className={styles.Locations}>
                         {Object.keys(locations).map((el, i) =>
-                            <Card key={i * 99} location_id={el} bearing_number={locations[el]} machine_id={machine_id} />
+                            <Card key={(i+269) * 99} location_id={el} bearing_number={locations[el]} machine_id={machine_id} />
                         )}
                     </div>
                 </div>
