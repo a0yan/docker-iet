@@ -24,6 +24,7 @@ function showNotification(body) {
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const ref_el = useRef()
     const ref_count = useRef(0)
+    const uptime_ref=useRef(0)
     const [machine_params, setmachine_params] = useState({
         min_oil_level: 0,
         oil_level: 0,
@@ -33,6 +34,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         temperature: 0
     })
     const [time, settime] = useState('')
+    const [yesterday_uptime, setyesterday_uptime] = useState('')
     const [issues, setissues] = useState({
         High_Power_Consumption: 0,
         Low_Power: 0,
@@ -45,6 +47,16 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     useEffect(() => {
         const ourRequest = axios.CancelToken.source()
         const get_data = async () => {
+            if(uptime_ref.current===0){
+                const yes_uptime=await axios.post('/get-yesterday-uptime',{
+                    user_id:user,
+                    machine_id:machine_id
+                },{cancelToken:ourRequest.token})
+                if(yes_uptime.data!==null){
+                    uptime_ref.current=1
+                    setyesterday_uptime(timeConverter(yes_uptime.data.yesterday_uptime))
+                }
+            }
             const response = await axios.post('/get-machine-params', {
                 user: user,
                 machine_id: machine_id
@@ -179,7 +191,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         <div className={styles.Container}>
             <h2 className={`${styles.Heading}`}>Equipment {heading}</h2>
             <div className={styles.Dashboard}>
-                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3>Total Uptime</h3> <h3>{time}</h3></div>
+                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3>Uptime</h3> <h3 style={{margin:'0'}}>{time}</h3><h3>Yesterday's Uptime</h3><h3 style={{margin:'0'}}>{yesterday_uptime}</h3></div>
                 <div className={`${styles.Grid_line} ${styles.Oil}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3>
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}

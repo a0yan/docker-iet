@@ -120,7 +120,6 @@ try {
   if(response.rows.length!==0){
     if(updated===true){
       updated=false
-      console.log("FIRED");
       const response2=await pool.query("SELECT * from total_uptime WHERE user_id=$1 AND machine_id=$2",[user_id,machine_id])
       if(response2.rows.length!==0){
         await pool.query('UPDATE total_uptime SET uptime=$1 WHERE user_id=$2 AND machine_id=$3',[response2.rows[0].uptime+new Date(time).getTime()-response.rows[0].prev_downtime.getTime(),user_id,machine_id])
@@ -151,6 +150,24 @@ app.post('/get-downtime',async(req,res)=>{
     console.error(error.message)
   }
 })
+app.post(`/get-yesterday-uptime`,async(req,res)=>{
+  try{
+    const user_id=req.body.user_id
+    const machine_id=req.body.machine_id
+  const response=await pool.query(`SELECT yesterday_uptime from yesterday_uptime WHERE user_id=$1 AND machine_id=$2`,[user_id,machine_id])
+  if(response.rows.length===0){
+    res.json(null)
+  }
+  else{
+    console.log(response.rows[0]);
+    res.json(response.rows[0])
+  }
+}
+catch(error){
+console.error(error.message)
+}
+}
+)
 app.post('/record-machine-params',async(req,res)=>{
   const machine_params=req.body.machine_params
   try{
