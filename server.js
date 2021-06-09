@@ -110,9 +110,10 @@ app.post('/get-machine-params',async(req,res)=>{
     console.error(error.message)
   }
 })
-
+let updated=false
 app.put('/update-downtime',async(req,res)=>{
 try {
+  updated=true
   const user_id=req.body.user_id
   const machine_id=req.body.machine_id
   const time=req.body.time
@@ -142,12 +143,11 @@ app.post('/get-downtime',async(req,res)=>{
     await pool.query('INSERT INTO total_uptime (user_id,machine_id,uptime) values ($1,$2,$3)',[user_id,machine_id,uptime])
     }
     else{
-      if(uptime>uptime_response.rows[0].uptime){
-        await pool.query('UPDATE total_uptime SET uptime=$1',[uptime])
-      }
-      else{
+        if(updated){
+        updated=false
+        console.log("HELOOOOOO");
         await pool.query('UPDATE total_uptime SET uptime=$1',[uptime_response.rows[0].uptime+uptime])
-      }
+        }
     }
   }
   } catch (error) {

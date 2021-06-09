@@ -11,7 +11,7 @@ const  msToTime=(duration)=>{
    return hours + ":" + minutes + ":" + seconds;
  }
 
-const duration=1035438911-19800000
+const duration=59415537-19800000
 console.log(msToTime(duration));
 
  module.exports=msToTime
