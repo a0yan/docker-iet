@@ -113,12 +113,22 @@ app.post('/get-machine-params',async(req,res)=>{
 let updated=false
 app.put('/update-downtime',async(req,res)=>{
 try {
-  updated=true
   const user_id=req.body.user_id
   const machine_id=req.body.machine_id
   const time=req.body.time
   const response=await pool.query("SELECT * FROM machine_downtime WHERE user_id=$1 AND machine_id=$2",[user_id,machine_id])
   if(response.rows.length!==0){
+    if(updated===true){
+      updated=false
+      console.log("FIRED");
+      const response2=await pool.query("SELECT * from total_uptime WHERE user_id=$1 AND machine_id=$2",[user_id,machine_id])
+      if(response2.rows.length!==0){
+        await pool.query('UPDATE total_uptime SET uptime=$1 WHERE user_id=$2 AND machine_id=$3',[response2.rows[0].uptime+new Date(time).getTime()-response.rows[0].prev_downtime.getTime(),user_id,machine_id])
+      }
+      else{
+        await pool.query('INSERT INTO total_uptime (user_id,machine_id,uptime) values ($1,$2,$3)',[user_id,machine_id,new Date(time).getTime()-response.rows[0].prev_downtime.getTime()])
+      }
+    }
     await pool.query("UPDATE machine_downtime SET prev_downtime=$1 WHERE user_id=$2",[time,user_id])
   }
   else{
@@ -132,24 +142,11 @@ try {
 })
 app.post('/get-downtime',async(req,res)=>{
   try {
+    updated=true
     const user_id=req.body.user_id
     const machine_id=req.body.machine_id
     const response=await pool.query("SELECT prev_downtime FROM machine_downtime WHERE user_id=$1 AND machine_id=$2;",[user_id,machine_id])
     res.send(response.rows[0])
-    if(response.rows.length!==0){
-    const uptime=new Date().getTime() - new Date(response.rows[0].prev_downtime).getTime()
-    const uptime_response=await pool.query('SELECT * FROM total_uptime where user_id=$1 and machine_id=$2',[user_id,machine_id])
-    if(uptime_response.rows.length===0){
-    await pool.query('INSERT INTO total_uptime (user_id,machine_id,uptime) values ($1,$2,$3)',[user_id,machine_id,uptime])
-    }
-    else{
-        if(updated){
-        updated=false
-        console.log("HELOOOOOO");
-        await pool.query('UPDATE total_uptime SET uptime=$1',[uptime_response.rows[0].uptime+uptime])
-        }
-    }
-  }
   } catch (error) {
     console.error(error.message)
   }
