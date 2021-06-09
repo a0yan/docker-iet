@@ -10,4 +10,8 @@ const  msToTime=(duration)=>{
  
    return hours + ":" + minutes + ":" + seconds;
  }
- export default msToTime
+
+const duration=1035438911-19800000
+console.log(msToTime(duration));
+
+ module.exports=msToTime

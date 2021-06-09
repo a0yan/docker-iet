@@ -125,7 +125,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                         machine_id: machine_id,
                     }, { cancelToken: ourRequest.token })
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
-                    settime(timeConverter(diff))//  ocnverts seconds in HH:MM:SS
+                    settime(timeConverter(diff))//  converts seconds in HH:MM:SS
                 }
                 else {
 
@@ -171,7 +171,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         }
     }
     const record_issue = async () => { // Stores the machine parameters on the database in case of any issues if clicked by user
-        axios.post('/record-machine-params', {
+        await axios.post('/record-machine-params', {
             machine_params: machine_params
         })
     }

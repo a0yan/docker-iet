@@ -48,7 +48,7 @@ const Login = ({ setAuth, setUser }) => {
                     <FormInput name='email' type='email' value={userCred.email} label='Email' onChange={handleChange} />
                     <FormInput name='password' type='password' value={userCred.password} label='Password' onChange={handleChange} />
                     <ReCAPTCHA
-                        sitekey="6LeicRsbAAAAANVKVME_chF-ixOgDsq-Fi3q8CNR"
+                        sitekey="6LeTih4bAAAAADYZNuBNoV4Oe7E5MEuiN2bRBEv9"
                         size='invisible'
                         ref={reRef}
                     />

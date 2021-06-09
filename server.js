@@ -19,7 +19,7 @@ app.use(passport.initialize());
 app.use(passport.session())
 //
 const port=process.env.PORT || 5000
-// process.env.NODE_ENV  for p4oduction
+// process.env.NODE_ENV  for production
 if (process.env.NODE_ENV==='production'){
   //server static content
   //npm run build on client
@@ -135,8 +135,23 @@ app.post('/get-downtime',async(req,res)=>{
     const machine_id=req.body.machine_id
     const response=await pool.query("SELECT prev_downtime FROM machine_downtime WHERE user_id=$1 AND machine_id=$2;",[user_id,machine_id])
     res.send(response.rows[0])
+    if(response.rows.length!==0){
+    const uptime=new Date().getTime() - new Date(response.rows[0].prev_downtime).getTime()
+    const uptime_response=await pool.query('SELECT * FROM total_uptime where user_id=$1 and machine_id=$2',[user_id,machine_id])
+    if(uptime_response.rows.length===0){
+    await pool.query('INSERT INTO total_uptime (user_id,machine_id,uptime) values ($1,$2,$3)',[user_id,machine_id,uptime])
+    }
+    else{
+      if(uptime>uptime_response.rows[0].uptime){
+        await pool.query('UPDATE total_uptime SET uptime=$1',[uptime])
+      }
+      else{
+        await pool.query('UPDATE total_uptime SET uptime=$1',[uptime_response.rows[0].uptime+uptime])
+      }
+    }
+  }
   } catch (error) {
-    
+    console.error(error.message)
   }
 })
 app.post('/record-machine-params',async(req,res)=>{

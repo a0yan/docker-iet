@@ -28,7 +28,7 @@ const Home = ({setAuth,user,setUser}) => {
     return (
         <>
         <div className={styles.Home}>
-            <h1 className={styles.Heading}>INFINITE ENDURANCE TECHNOLOGIES</h1>
+            <h1 className={styles.Heading}>INFINITE ENDURANCE<br/>TECHNOLOGIES</h1>
         </div>
         <Machines user={user}/>
         </>
