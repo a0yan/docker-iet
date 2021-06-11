@@ -14,4 +14,11 @@
     font-size: 2.5rem;
     font-weight:bolder;
     letter-spacing: 10px;
+    font-weight: 200;
+}
+@media screen and (max-width:1000px) {
+    .Heading{
+        margin-top: 10%;
+        font-size: 1.8rem;
+    }
 }

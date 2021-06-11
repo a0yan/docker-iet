@@ -159,6 +159,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
 
             }
         }
+        get_data()
         const clear = setInterval(() => get_data(), 3000)
         return () => {
             ourRequest.cancel()
@@ -191,7 +192,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         <div className={styles.Container}>
             <h2 className={`${styles.Heading}`}>Equipment {heading}</h2>
             <div className={styles.Dashboard}>
-                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3>Uptime</h3> <h3 style={{margin:'0'}}>{time}</h3><h3>Yesterday's Uptime</h3><h3 style={{margin:'0'}}>{yesterday_uptime}</h3></div>
+                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3 className={styles.Uptime_Heading} >Uptime</h3> <h3 className={styles.Uptime_Heading}>{time}</h3><h3 className={styles.Uptime_Heading}>Yesterday's Uptime</h3><h3 className={styles.Uptime_Heading}>{yesterday_uptime}</h3></div>
                 <div className={`${styles.Grid_line} ${styles.Oil}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3>
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
@@ -207,7 +208,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     <GaugeChart2 power={machine_params.power} />
                     <span>(KW)</span>
                 </div>
-                <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 style={{ marginTop: '0', marginBottom: '0.2%' }} >Realtime Vibrational Analysis</h3>
+                <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 className={styles.Vibrational_Heading}>Realtime Vibrational Analysis</h3>
                     <div className={styles.Locations}>
                         {Object.keys(locations).map((el, i) =>
                             <Card key={(i+269) * 99} location_id={el} bearing_number={locations[el]} machine_id={machine_id} />

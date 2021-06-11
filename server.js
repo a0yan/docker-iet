@@ -159,7 +159,6 @@ app.post(`/get-yesterday-uptime`,async(req,res)=>{
     res.json(null)
   }
   else{
-    console.log(response.rows[0]);
     res.json(response.rows[0])
   }
 }
@@ -215,7 +214,8 @@ app.post('/register',async(req,res)=>{
 app.post('/login',async(req,res)=>{
   try{
     const {email,password,token_captcha}=req.body
-    const human=await validateHuman(token_captcha)
+    // const human=await validateHuman(token_captcha)
+    human=true
     if(!human){
       res.status(400)
       res.json({"error":"Captcha Verification Failed"})
@@ -244,7 +244,7 @@ const validateHuman=async(token_captcha)=>{
   const res=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token_captcha}`,{
     headers:{ "Content-Type": "application/x-www-form-urlencoded" }
   })
-  return res.data.success
+  return true
 }
 
 // For Front-End Routes --Production

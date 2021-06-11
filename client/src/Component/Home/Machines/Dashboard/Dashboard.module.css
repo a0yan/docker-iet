@@ -52,6 +52,9 @@
     align-items: center;
     justify-content: center;
 }
+.Uptime_Heading{
+margin-top: 0;
+}
 
 .Oil {
     grid-row-start: 1;
@@ -94,7 +97,9 @@
     padding: 1%;
 
 }
-
+.Vibrational_Heading{
+    margin-top:0;
+}
 .Locations {
     display: flex;
     justify-content: space-between;
@@ -113,6 +118,7 @@
     background: #cae8d5;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .Button {
@@ -135,8 +141,11 @@
         width: 95vw;
         height: 98vh;
         display: grid;
-        grid-gap: 10px;
-        grid-template-rows: 25vh 38vh;
+        grid-gap: 15px;
+        grid-template-rows: 30vh 33vh;
+    }
+    .Uptime_Heading{
+        margin:0px;
     }
 
     .Temperature{
@@ -153,5 +162,28 @@
     }
     .Report{
         padding-left: 8%;
+    }
+    .Power{
+        justify-content:unset;
+    }
+    .Issues{
+        grid-column-end: 6;
+    }
+    .Vibrational_Heading{
+        margin-bottom: 0.2%;
+    }
+    .Button{
+        height: 30%;
+        width: 80%;
+        margin: 1.5px;
+    }
+    .Power{
+        overflow: hidden;
+    }
+    .Power>span {
+        font-size: 10px;
+    }
+    .Power>h4{
+        margin-top: 0;
     }
 }
