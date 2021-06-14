@@ -4,6 +4,12 @@
     border: 1px dotted gray;
     
 }
+label{
+    color:white;
+}
+.Container .Dashboard .Hidden{
+    visibility: hidden;
+}
 
 .Container:nth-of-type(odd) {
     background-image: linear-gradient(to right top, #645858, #4e4245, #372d32, #221a21, #090110);
@@ -12,7 +18,13 @@
 .Container:nth-of-type(even) {
     background-image: linear-gradient(to right top, #645858, #4e4245, #372d32, #221a21, #090110);
 }
-
+.Checkbox{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:5px;
+    padding-right: 140px;
+}
 .Dashboard {
     width: 92.5vw;
     height: 97vh;
@@ -186,4 +198,5 @@ margin-top: 0;
     .Power>h4{
         margin-top: 0;
     }
+
 }

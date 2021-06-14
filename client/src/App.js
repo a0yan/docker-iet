@@ -3,6 +3,7 @@ import queryString from "query-string";
 import React, { useState,useEffect,lazy,Suspense } from 'react';
 import axios from 'axios'
 import Login from './Component/Login/Login';
+import Register from './Component/Register/Register'
 import {Redirect, Route,Switch} from 'react-router-dom'
 const Home=lazy(()=>import('./Component/Home/Home'));
 const FreqAmp=lazy(()=>import('./Component/Freq_amp/Freq_amp'))
@@ -42,8 +43,13 @@ function App(props) {
     props.history.push(`/`)
   }
   const classes=['Option']
+  const classes_2=['Option','Hidden']
   if (!Auth){
     classes.push('Hidden') // Hides the Logout button If the user is not logged In
+    classes_2.pop()
+  }
+  else{
+    classes_2.push('Hidden')
   }
   return (
     <div className="App">
@@ -53,6 +59,7 @@ function App(props) {
         <a href='https://www.infiniteendurancetech.com/'><div className="Option">About Us</div></a>
         <a href='https://www.infiniteendurancetech.com/'><div className="Option">Contact Us</div></a>
         <div className={classes.join(' ')} onClick={logout}>Logout</div>
+        <a href='/register' className={classes_2.join(' ')} onClick={logout}>Register</a>
       </div>
     </div>
     <Switch>
@@ -62,6 +69,7 @@ function App(props) {
       <Route path='/freq_amp' render={(props)=>Auth?(<FreqAmp {...props} user={user}/>):null } />
       <Route  path='/freq_phase' render={(props)=>Auth?(<FreqPhase  {...props} user={user} />):null} />
       <Route  path='/acc_time' render={(props)=>Auth?(<Acctime {...props}  user={user} />):null} />
+      <Route exact path='/register' render={(props)=><Register {...props} />}/>
       </Suspense>
     </Switch>
     </div>

@@ -183,6 +183,7 @@ app.post('/register',async(req,res)=>{
     const {
       master_username,master_password,email,password,machines,factory_name
     }=req.body
+    console.log(req.body);
     const new_machines=JSON.stringify(machines)
     if(master_username===process.env.MASTER_USERNAME && master_password===process.env.MASTER_PASSWORD){
     const user= await pool.query("SELECT * FROM users WHERE email= $1",[email])
@@ -200,7 +201,7 @@ app.post('/register',async(req,res)=>{
 
     }
     else{
-      res.status(401).send("Master Password or Username is Incorrect")
+      res.status(404).send("Master Username or Password is Incorrect")
     }  
   }catch(err){
     console.error(err.message)
@@ -214,11 +215,10 @@ app.post('/register',async(req,res)=>{
 app.post('/login',async(req,res)=>{
   try{
     const {email,password,token_captcha}=req.body
-    // const human=await validateHuman(token_captcha)
-    human=true
+    const human=await validateHuman(token_captcha)
     if(!human){
       res.status(400)
-      res.json({"error":"Captcha Verification Failed"})
+      res.send("Captcha Verification Failed")
       return 
     }
     const user=await pool.query("SELECT * FROM users WHERE email=$1",[email])
@@ -244,7 +244,7 @@ const validateHuman=async(token_captcha)=>{
   const res=await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token_captcha}`,{
     headers:{ "Content-Type": "application/x-www-form-urlencoded" }
   })
-  return true
+  return res.data.success
 }
 
 // For Front-End Routes --Production

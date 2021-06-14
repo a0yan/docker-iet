@@ -7,6 +7,7 @@ import PowerHistory from './Power_History/Power_History'
 import TemperatureHistory from './Temperature_History/Temperature_History'
 import axios from 'axios'
 import timeConverter from './TimeConverter/TimeConverter'
+import Checkbox from './Checkbox/Checkbox'
 // import addNotification from 'react-push-notification'
 function showNotification(body) {
     Notification.requestPermission(function (result) {
@@ -24,7 +25,7 @@ function showNotification(body) {
 const Dashboard = ({ heading, user, machine_id, locations }) => {
     const ref_el = useRef()
     const ref_count = useRef(0)
-    const uptime_ref=useRef(0)
+    const uptime_ref = useRef(0)
     const [machine_params, setmachine_params] = useState({
         min_oil_level: 0,
         oil_level: 0,
@@ -44,16 +45,23 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         Low_Temperature: 0
     })
     const [History, setHistory] = useState([])
+    const [checkbox, setcheckbox] = useState({
+        Uptime: true,
+        Oil_Management_System: true,
+        Power_Consumption_History: true,
+        Temperature_Level_Indicator: true,
+        Power_Consumption: true
+    })
     useEffect(() => {
         const ourRequest = axios.CancelToken.source()
         const get_data = async () => {
-            if(uptime_ref.current===0){
-                const yes_uptime=await axios.post('/get-yesterday-uptime',{
-                    user_id:user,
-                    machine_id:machine_id
-                },{cancelToken:ourRequest.token})
-                if(yes_uptime.data!==null){
-                    uptime_ref.current=1
+            if (uptime_ref.current === 0) {
+                const yes_uptime = await axios.post('/get-yesterday-uptime', {
+                    user_id: user,
+                    machine_id: machine_id
+                }, { cancelToken: ourRequest.token })
+                if (yes_uptime.data !== null) {
+                    uptime_ref.current = 1
                     setyesterday_uptime(timeConverter(yes_uptime.data.yesterday_uptime))
                 }
             }
@@ -161,6 +169,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         }
         get_data()
         const clear = setInterval(() => get_data(), 3000)
+
         return () => {
             ourRequest.cancel()
             clearInterval(clear)
@@ -191,19 +200,30 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
     return (
         <div className={styles.Container}>
             <h2 className={`${styles.Heading}`}>Equipment {heading}</h2>
+            <div className={styles.Checkbox}>
+                <div>
+                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Uptime" label="Uptime" value={checkbox.Uptime} />
+                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Power_Consumption" label="Power Consumption" value={checkbox.Power_Constmption} />
+                </div>
+                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Oil_Management_System" label="Oil Management System" value={checkbox.Oil_Management_System} />
+                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Power_Consumption_History" label="Power Consumption History" value={checkbox.Power_Consumption_History} />
+                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Temperature_Level_Indicator" label="Temperature Level Indicator" value={checkbox.Temperature_Level_Indicator} />
+
+            </div>
             <div className={styles.Dashboard}>
-                <div className={`${styles.Grid_line} ${styles.Uptime}`}><h3 className={styles.Uptime_Heading} >Uptime</h3> <h3 className={styles.Uptime_Heading}>{time}</h3><h3 className={styles.Uptime_Heading}>Yesterday's Uptime</h3><h3 className={styles.Uptime_Heading}>{yesterday_uptime}</h3></div>
-                <div className={`${styles.Grid_line} ${styles.Oil}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3>
+                <div className={`${styles.Grid_line} ${styles.Uptime} ${!checkbox.Uptime ? styles.Hidden : null}`}><h3 className={styles.Uptime_Heading} >Uptime</h3> <h3 className={styles.Uptime_Heading}>{time}</h3><h3 className={styles.Uptime_Heading}>Yesterday's Uptime</h3><h3 className={styles.Uptime_Heading}>{yesterday_uptime}</h3></div>
+                <div className={`${styles.Grid_line} ${styles.Oil} ${!checkbox.Oil_Management_System ? styles.Hidden : null}`}><h3>Oil Management System </h3><h3>Oil Level Indicator</h3>
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
                     /> <h3>Oil Quality Indicator</h3><GaugeChart oil_percent={machine_params.oil_quality} /></div>
-                <div className={`${styles.Grid_line} ${styles.Report} `}>
+                <div className={`${styles.Grid_line} ${styles.Report} ${!checkbox.Power_Consumption_History ? styles.Hidden : null}`}>
                     <h3>Power Consumption History </h3>
                     {History.length !== 0 ? (<PowerHistory chart_data={History} />) : null}
                 </div>
-                <div className={`${styles.Grid_line} ${styles.Temperature}`}>
+                <div className={`${styles.Grid_line} ${styles.Temperature} ${!checkbox.Temperature_Level_Indicator ? styles.Hidden : null}`}>
                     <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h3>{machine_params.temperature}&deg; C</h3> {History.length !== 0 ? (<TemperatureHistory chart_data={History} />) : null} </div>
-                <div className={`${styles.Grid_line} ${styles.Power}`}>
+
+                <div className={`${styles.Grid_line} ${styles.Power} ${!checkbox.Power_Consumption ? styles.Hidden : null}`}>
                     <h4>Power Consumption</h4>
                     <GaugeChart2 power={machine_params.power} />
                     <span>(KW)</span>
@@ -211,7 +231,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 <div className={`${styles.Grid_line} ${styles.Vibrational}`}><h3 className={styles.Vibrational_Heading}>Realtime Vibrational Analysis</h3>
                     <div className={styles.Locations}>
                         {Object.keys(locations).map((el, i) =>
-                            <Card key={(i+269) * 99} location_id={el} bearing_number={locations[el]} machine_id={machine_id} />
+                            <Card key={(i + 269) * 99} location_id={el} bearing_number={locations[el]} machine_id={machine_id} />
                         )}
                     </div>
                 </div>
