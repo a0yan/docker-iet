@@ -8,7 +8,7 @@ label{
     color:white;
 }
 .Container .Dashboard .Hidden{
-    visibility: hidden;
+    visibility:hidden;
 }
 
 .Container:nth-of-type(odd) {
@@ -30,7 +30,7 @@ label{
     height: 97vh;
     display: grid;
     grid-gap: 22px;
-    grid-template-columns: 14vw 20vw 30vw 21vw;
+    grid-template-columns: 14vw 20vw 20vw 31vw;
     grid-template-rows: 30vh 38vh;
     padding: 1%;
     background-color: transparent;
@@ -39,7 +39,7 @@ label{
 }
 
 .Grid_line {
-    /* border: 1px solid rgb(138, 137, 136); */
+    border: 3px solid black;
     display: flex;
     flex-direction: column;
     border-radius: 15px;
@@ -86,7 +86,7 @@ margin-top: 0;
 .Report {
     grid-row-start: 1;
     grid-row-end: 3;
-    grid-column-start: 3;
+    /* grid-column-start: 3; */
     background-color: #cae8d5;
     display: flex;
     align-items: center;

@@ -1,6 +1,6 @@
 import { React, useEffect, useState, useRef } from 'react'
 import { Line } from 'react-chartjs-2'
-import axios from 'axios'
+import axios from '../../api/axios'
 import qs from 'query-string'
 const convert_to_float=(el)=>parseFloat(el)
 const Freq_acc = (props) => {

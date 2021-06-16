@@ -1,16 +1,16 @@
 import {React,useEffect} from 'react'
 import styles from './Home.module.css'
 import Machines from './Machines/Machines'
-import axios from 'axios'
+import axios from '../../api/axios'
 const Home = ({setAuth,user,setUser}) => {
     useEffect(() => {
-        const ourRequest = axios.CancelToken.source()
+    
         const getstatus=async()=>{
         const res=await axios({
             method:'GET',
             url:'/is-verified',
             headers:{token:window.localStorage.token},
-            cancelToken: ourRequest.token
+            
 
         })
         if(res.status===201){
@@ -23,7 +23,7 @@ const Home = ({setAuth,user,setUser}) => {
         
     }
         getstatus()
-        return ()=>{ourRequest.cancel()}
+        // return ()=>{ourRequest.cancel()}
     }, [setAuth,setUser])
     return (
         <>

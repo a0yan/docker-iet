@@ -1,7 +1,7 @@
 import {React,useEffect,useState} from 'react'
 import qs from 'query-string'
 import {Line} from 'react-chartjs-2'
-import axios from 'axios'
+import axios from '../../api/axios'
 const Freq_phase = (props) => {
     const [X, setX] = useState([]) //X-coordinate as a list 
     const [Y, setY] = useState([]) // Y-coordinate as a list
@@ -26,14 +26,14 @@ const Freq_phase = (props) => {
 
             if(response.data!==null){
                 // Change the state only If response is not null
-            const X_data=response.data.frequency.slice(1,-1).split(',').map(el=>parseFloat(el))
+            const X_data=response.data.db_data.frequency.slice(1,-1).split(',').map(el=>parseFloat(el))
             let avg=0
             const l=X_data.length
-            const Y_data=response.data.phase.slice(1,-1).split(',').map(el=>{
+            const Y_data=response.data.db_data.phase.slice(1,-1).split(',').map(el=>{
                 avg=avg+(parseFloat(el)/l)
                 return parseFloat(el)*(180/Math.PI)
             })
-            const indtime=new Date (response.data.timestamp)
+            const indtime=new Date (response.data.db_data.timestamp)
             const new_time=indtime.toLocaleString('en-UK',{timeZone:'Asia/Kolkata'}) //Converting GMT to IST
             setTIME(new_time)
             const AVG_data=new Array(l).fill(avg)

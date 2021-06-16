@@ -1,23 +1,21 @@
 import React, {useEffect,useState,lazy,Suspense} from 'react'
 import styles from './Machines.module.css'
-import axios from 'axios'
+import axios from '../../../api/axios'
 const Dashboard =lazy(()=> import('./Dashboard/Dashboard'))
 const Machines = ({user}) => {
     const [machines, setmachines] = useState([])
     const [factory_name, setfactory_name] = useState("")
     useEffect(() =>{
-        const ourRequest=axios.CancelToken.source()
+        
         const get_machine=async()=>{
         const response=await axios.get('/get-machine',{
             headers:{user},
-            cancelToken:ourRequest.token
+            
         })
         setmachines(response.data.machine_data);
         setfactory_name(response.data.factory_name)
     }
-    get_machine()
-    return ()=>{ourRequest.cancel()}
-    
+    get_machine()    
     }, [user])
     return (
         <div className={styles.Machines}>

@@ -1,7 +1,7 @@
 import { React, useState,useRef} from 'react'
 import styles from './Login.module.css'
 import FormInput from '../Forminput/Forminput'
-import axios from 'axios'
+import axios from '../../api/axios'
 import ReCAPTCHA from 'react-google-recaptcha'
 const Login = ({ setAuth, setUser }) => {
     const [userCred, setuserCred] = useState({ email: 'sample@sample.com', password: '5678' })
@@ -15,9 +15,9 @@ const Login = ({ setAuth, setUser }) => {
         event.preventDefault()
         const token_captcha = await reRef.current.executeAsync()
         reRef.current.reset()
-
+        
         try {
-            const response = await axios.post('login', {
+            const response = await axios.post('/login', {
                 email: userCred.email,
                 password: userCred.password,
                 token_captcha

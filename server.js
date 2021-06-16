@@ -183,7 +183,6 @@ app.post('/register',async(req,res)=>{
     const {
       master_username,master_password,email,password,machines,factory_name
     }=req.body
-    console.log(req.body);
     const new_machines=JSON.stringify(machines)
     if(master_username===process.env.MASTER_USERNAME && master_password===process.env.MASTER_PASSWORD){
     const user= await pool.query("SELECT * FROM users WHERE email= $1",[email])
@@ -197,7 +196,7 @@ app.post('/register',async(req,res)=>{
     const new_user=await pool.query("INSERT INTO users (email,password,machines,factory_name) VALUES($1,$2,$3,$4) RETURNING * ",[email,bcryptPassword,new_machines,factory_name])
     const token=jwtG(new_user.rows[0].user_id)
     const user_id=(new_user.rows[0].user_id)
-    res.send({token,user_id})
+    res.send({user_id})
 
     }
     else{
@@ -215,7 +214,7 @@ app.post('/register',async(req,res)=>{
 app.post('/login',async(req,res)=>{
   try{
     const {email,password,token_captcha}=req.body
-    const human=await validateHuman(token_captcha)
+    let human=await validateHuman(token_captcha)
     if(!human){
       res.status(400)
       res.send("Captcha Verification Failed")

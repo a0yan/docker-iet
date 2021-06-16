@@ -1,16 +1,16 @@
 import './App.css';
 import queryString from "query-string";
 import React, { useState,useEffect,lazy,Suspense } from 'react';
-import axios from 'axios'
+import axios from './api/axios'
 import Login from './Component/Login/Login';
 import Register from './Component/Register/Register'
 import {Redirect, Route,Switch} from 'react-router-dom'
-const Home=lazy(()=>import('./Component/Home/Home'));
-const FreqAmp=lazy(()=>import('./Component/Freq_amp/Freq_amp'))
-const FreqPhase=lazy(()=>import('./Component/Freq_phase/Freq_phase'));
-const Acctime=lazy(()=>import('./Component/Acc_time/Acc_time'));
+const Home=lazy(()=>import('./Component/Home/Home'));     //React Lazy Loading 
+const FreqAmp=lazy(()=>import('./Component/Freq_amp/Freq_amp')) //React Lazy Loading
+const FreqPhase=lazy(()=>import('./Component/Freq_phase/Freq_phase')); //React Lazy Loading
+const Acctime=lazy(()=>import('./Component/Acc_time/Acc_time')); //React Lazy Loading
 function App(props) {
-  const [Auth, setAuth] = useState(false)
+  const [Auth, setAuth] = useState(false) // Sets status Of the User  
   const [user, setUser] = useState(null)
   useEffect(() => {
     const query=queryString.parse(props.location.search)

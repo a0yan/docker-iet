@@ -5,7 +5,7 @@ import GaugeChart2 from './GaugeChart2/GaughChart2'
 import Card from './Card/Card'
 import PowerHistory from './Power_History/Power_History'
 import TemperatureHistory from './Temperature_History/Temperature_History'
-import axios from 'axios'
+import axios from '../../../../api/axios'
 import timeConverter from './TimeConverter/TimeConverter'
 import Checkbox from './Checkbox/Checkbox'
 // import addNotification from 'react-push-notification'
@@ -53,13 +53,13 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         Power_Consumption: true
     })
     useEffect(() => {
-        const ourRequest = axios.CancelToken.source()
+        // const ourRequest = axios.CancelToken.source()
         const get_data = async () => {
             if (uptime_ref.current === 0) {
                 const yes_uptime = await axios.post('/get-yesterday-uptime', {
                     user_id: user,
                     machine_id: machine_id
-                }, { cancelToken: ourRequest.token })
+                },)
                 if (yes_uptime.data !== null) {
                     uptime_ref.current = 1
                     setyesterday_uptime(timeConverter(yes_uptime.data.yesterday_uptime))
@@ -68,7 +68,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
             const response = await axios.post('/get-machine-params', {
                 user: user,
                 machine_id: machine_id
-            }, { cancelToken: ourRequest.token })
+            })
             if (response.data !== false) {
                 setHistory(response.data);
                 setmachine_params(
@@ -129,7 +129,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                         user_id: user,
                         machine_id: machine_id,
                         time: new Date()
-                    }, { cancelToken: ourRequest.token })
+                    })
 
                     settime('00:00:00')
                 }
@@ -143,7 +143,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     const prev = await axios.post('/get-downtime', {
                         user_id: user,
                         machine_id: machine_id,
-                    }, { cancelToken: ourRequest.token })
+                    })
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
                     settime(timeConverter(diff))//  converts seconds in HH:MM:SS
                 }
@@ -158,7 +158,7 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     const prev = await axios.post('/get-downtime', {
                         user_id: user,
                         machine_id: machine_id,
-                    }, { cancelToken: ourRequest.token })
+                    })
                     const diff = new Date().getTime() - new Date(prev.data.prev_downtime).getTime()
                     settime(timeConverter(diff))
                 }
@@ -171,7 +171,6 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
         const clear = setInterval(() => get_data(), 3000)
 
         return () => {
-            ourRequest.cancel()
             clearInterval(clear)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -206,9 +205,8 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                 <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Power_Consumption" label="Power Consumption" value={checkbox.Power_Constmption} />
                 </div>
                 <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Oil_Management_System" label="Oil Management System" value={checkbox.Oil_Management_System} />
-                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Power_Consumption_History" label="Power Consumption History" value={checkbox.Power_Consumption_History} />
                 <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Temperature_Level_Indicator" label="Temperature Level Indicator" value={checkbox.Temperature_Level_Indicator} />
-
+                <Checkbox checkbox={checkbox} setcheckbox={setcheckbox} name="Power_Consumption_History" label="Power Consumption History" value={checkbox.Power_Consumption_History} />
             </div>
             <div className={styles.Dashboard}>
                 <div className={`${styles.Grid_line} ${styles.Uptime} ${!checkbox.Uptime ? styles.Hidden : null}`}><h3 className={styles.Uptime_Heading} >Uptime</h3> <h3 className={styles.Uptime_Heading}>{time}</h3><h3 className={styles.Uptime_Heading}>Yesterday's Uptime</h3><h3 className={styles.Uptime_Heading}>{yesterday_uptime}</h3></div>
@@ -216,13 +214,12 @@ const Dashboard = ({ heading, user, machine_id, locations }) => {
                     <GaugeChart
                         oil_percent={((machine_params.oil_level - machine_params.min_oil_level) / (machine_params.max_oil_level - machine_params.min_oil_level)) * 100}
                     /> <h3>Oil Quality Indicator</h3><GaugeChart oil_percent={machine_params.oil_quality} /></div>
+                <div className={`${styles.Grid_line} ${styles.Temperature} ${!checkbox.Temperature_Level_Indicator ? styles.Hidden : null}`}>
+                    <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h3>{machine_params.temperature}&deg; C</h3> {History.length !== 0 ? (<TemperatureHistory chart_data={History} />) : null} </div>
                 <div className={`${styles.Grid_line} ${styles.Report} ${!checkbox.Power_Consumption_History ? styles.Hidden : null}`}>
                     <h3>Power Consumption History </h3>
                     {History.length !== 0 ? (<PowerHistory chart_data={History} />) : null}
                 </div>
-                <div className={`${styles.Grid_line} ${styles.Temperature} ${!checkbox.Temperature_Level_Indicator ? styles.Hidden : null}`}>
-                    <h3>Temperature Level Indicator </h3> <h4>Temperature</h4> <h3>{machine_params.temperature}&deg; C</h3> {History.length !== 0 ? (<TemperatureHistory chart_data={History} />) : null} </div>
-
                 <div className={`${styles.Grid_line} ${styles.Power} ${!checkbox.Power_Consumption ? styles.Hidden : null}`}>
                     <h4>Power Consumption</h4>
                     <GaugeChart2 power={machine_params.power} />

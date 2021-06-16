@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './Register.module.css'
 import FormInput from '../Forminput/Forminput'
-import axios from 'axios'
+import axios from '../../api/axios'
 const Register = () => {
     const [userCred, setuserCred] = useState({
         master_username: '',
@@ -29,7 +29,7 @@ const Register = () => {
     const handleSubmit = async () => {
         try {
             const response = await axios.post('/register', { ...userCred })
-            setsucess(true)
+            setsucess(response.data)
 
         } catch (error) {
             seterror(error.response.data)
@@ -63,6 +63,7 @@ const Register = () => {
                     </div>
                 </>
             ) : <><h1>User Registered Please Login!!</h1>
+                <h2> Your User Id is <strong>{sucess}</strong> Please note down for future references</h2>
                 <a href='/'><button className={styles.Button}>Login</button></a></>}
 
         </div>
