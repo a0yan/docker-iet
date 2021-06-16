@@ -1,12 +1,14 @@
+const { Pool } = require('pg');
+
 require('dotenv').config()
 try {
-  const Client= require("pg").Client
-  const client1 = new Client({
+
+  const pool = new Pool({
       connectionString:process.env.CONNECTION_URL,
       ssl: { rejectUnauthorized: false }
     })
-    client1.connect();
-    module.exports = client1;  
+    pool.connect();
+    module.exports = pool;  
 } catch (error) {
   console.error(error.message)
 }

@@ -22,8 +22,7 @@ const Home = ({setAuth,user,setUser}) => {
         }
         
     }
-        getstatus()
-        // return ()=>{ourRequest.cancel()}
+        getstatus() // Checks if the user is already authenticated or not if not sets auth as false which redirects to login page
     }, [setAuth,setUser])
     return (
         <>

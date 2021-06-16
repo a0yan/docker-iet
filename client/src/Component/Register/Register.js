@@ -11,9 +11,9 @@ const Register = () => {
         machines: [],
         factory_name: ''
     })
-    const [bearing, setbearing] = useState({ 1: "", 2: "", 3: "" })
-    const [error, seterror] = useState(null)
-    const [sucess, setsucess] = useState(null)
+    const [bearing, setbearing] = useState({ 1: "", 2: "", 3: "" })  // Bearing names of for equipment locations by default empty
+    const [error, seterror] = useState(null) // Used for storing errors
+    const [sucess, setsucess] = useState(false) // Used to confirm if user is registered
     const handleChange = (event) => {
         const { name, value } = event.target
         setuserCred({ ...userCred, [name]: value })
@@ -29,7 +29,7 @@ const Register = () => {
     const handleSubmit = async () => {
         try {
             const response = await axios.post('/register', { ...userCred })
-            setsucess(response.data)
+            setsucess(response.data.user_id)
 
         } catch (error) {
             seterror(error.response.data)
@@ -38,7 +38,7 @@ const Register = () => {
     }
     return (
         <div className={styles.Register}>
-            {sucess === null ? (
+            {sucess === false ? (
 
                 <>
                     <h2>Register User and Equipments</h2>
@@ -62,8 +62,10 @@ const Register = () => {
                         </div>
                     </div>
                 </>
-            ) : <><h1>User Registered Please Login!!</h1>
-                <h2> Your User Id is <strong>{sucess}</strong> Please note down for future references</h2>
+            ) : <>
+            {/* IF user is registered sucesfully display its user_id */}
+            <h1>User Registered Please Login!!</h1>
+                <h2> Your User Id is <strong>{sucess}</strong> <br/>Please note down for future references</h2>
                 <a href='/'><button className={styles.Button}>Login</button></a></>}
 
         </div>
