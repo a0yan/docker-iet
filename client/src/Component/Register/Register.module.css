@@ -72,5 +72,6 @@
         color: #D8000C;
         background-color: #FFD2D2;
         border: 1px solid red;
+        z-index: 5;
     }
 }
