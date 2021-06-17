@@ -25,6 +25,9 @@ h3{
   font-weight: bolder;
 }
 @media screen and (max-width:1000px) {
+  *{
+    font-size: medium;
+  }
   h3{
     font-size: medium;
   }
@@ -33,6 +36,7 @@ h3{
   }
   ::-webkit-scrollbar {
     width: 3px;
+    height: 3px;
   }
   ::-webkit-scrollbar-track{
     background-color:transparent;

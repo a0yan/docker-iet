@@ -44,9 +44,12 @@ input[type='password'] {
 }
 @media screen and (max-width:1000px) {
     .form_input:focus{
-        height: 100vh;
-        width: 100vw;
-        padding-left: 100px;
+        /* height: 110vh; */
+        /* width: 100vw; */
+        /* padding-left: 100px; */
+        position: relative;
+    /* background-color: black; */
     }
+
     
 }

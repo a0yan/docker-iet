@@ -52,3 +52,25 @@
     background-color: #FFD2D2;
     border: 1px solid red;
 }
+
+@media screen and (max-width:1000px) {
+    .Register_Card{
+        padding-top: 30%;
+        padding-bottom: 0;
+        width: 70%;
+        overflow-y: auto;
+    }
+    .error{
+        width: 20%;
+        height: 10%;
+        top:90px;
+        left: 100px;
+        position:fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #D8000C;
+        background-color: #FFD2D2;
+        border: 1px solid red;
+    }
+}

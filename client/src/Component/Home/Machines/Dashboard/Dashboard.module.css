@@ -150,18 +150,18 @@ margin-top: 0;
 
 @media screen and (max-width:1000px) {
     .Dashboard {
-        width: 95vw;
+        width: 98vw;
         height: 98vh;
         display: grid;
-        grid-gap: 15px;
-        grid-template-rows: 30vh 33vh;
+        grid-gap: 13px;
+        grid-template-columns: 14vw 20vw 25vw 31vw;
+        grid-template-rows: 30vh 35vh;
     }
     .Uptime_Heading{
         margin:0px;
     }
-
-    .Temperature{
-        grid-column-start: 4;
+    .Report{
+        grid-column-start:4;
         grid-column-end: 6;
     }
     .Locations{
@@ -173,7 +173,13 @@ margin-top: 0;
         flex-direction: column;
     }
     .Report{
-        padding-left: 8%;
+        padding-left: 15%;
+    }
+    .Temperature >h3{
+        margin: 0;
+    }
+    .Temperature >h4{
+        margin: 0;
     }
     .Power{
         justify-content:unset;
@@ -197,6 +203,18 @@ margin-top: 0;
     }
     .Power>h4{
         margin-top: 0;
+    }
+    .Issues>h3{
+        margin: 30px;
+    }
+    .Vibrational_Heading{
+        margin: 25px;
+    }
+    .Issues>h3::after{
+        content:"  ⬇️"
+    }
+    .Vibrational_Heading::after{
+     content:"  ⬇️"   
     }
 
 }

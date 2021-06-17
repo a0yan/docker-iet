@@ -43,7 +43,7 @@ const Register = () => {
                 <>
                     <h2>Register User and Equipments</h2>
                     <div className={styles.Register_Card}>
-                        <div>
+                        <div className={styles.Input}>
                             {error !== null ? (<div className={styles.error}>{error}</div>) : null}
                             <h4>Add User Details and Factory Specifications</h4>
                             <FormInput name='master_username' type='email' value={userCred.master_username} label='Master Username' onChange={handleChange} />
