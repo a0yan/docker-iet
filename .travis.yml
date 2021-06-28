@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+install:
+  - docker build -t a0yan/multi-client ./client
+  - docker build -t a0yan/multi-server .
+  - docker build -t a0yan/multi-nginx ./nginx
+  # Pushing them to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push a0yan/multi-client
+  - docker push a0yan/multi-server
+  - docker push a0yan/multi-nginx
+
+
+
