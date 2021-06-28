@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, "client/build")))
 }
 //Routes
-app.get('/is-verified', async (req, res) => {
+app.get('/api/is-verified', async (req, res) => {
   // To verify if the token recieved from the frontend is correct or not
   const jwttoken = req.header("token")
   if (!jwttoken) {
@@ -41,7 +41,7 @@ app.get('/is-verified', async (req, res) => {
 
 })
 //Post Requests
-app.post('/get-data', async (req, res) => {
+app.post('/api/get-data', async (req, res) => {
   // Used to fetch all the data required to plot the 3 graphs of FFT,Phase and Time History
   try {
     const location_id = parseInt((req.body.location_id))
@@ -63,7 +63,7 @@ app.post('/get-data', async (req, res) => {
   }
 
 })
-app.get('/get-machine', async (req, res) => {
+app.get('/api/get-machine', async (req, res) => {
   // This route is used to send the array of dictionary elemnets in which each dictionary reprasents machines and its keys are locations
   // Along with the Factory name
   // All this info is stored during the registration.
@@ -77,7 +77,7 @@ app.get('/get-machine', async (req, res) => {
   }
 
 })
-app.post('/get-machine-params', async (req, res) => {
+app.post('/api/get-machine-params', async (req, res) => {
   // This Route performs 3 tasks
   // 1. Querying the daily_avg  power of the machine from daily_avg table
   // 2. Querying the hourly_avg power
@@ -103,7 +103,7 @@ app.post('/get-machine-params', async (req, res) => {
   }
 })
 let updated = false
-app.put('/update-downtime', async (req, res) => {
+app.put('/api/update-downtime', async (req, res) => {
   // This is a bit tricky
   // This route is called on every rerender when power is below threshold level but we need to store the previous uptime
   // only the first time when the power is below the significant level
@@ -140,7 +140,7 @@ app.put('/update-downtime', async (req, res) => {
     console.error(error.message)
   }
 })
-app.post('/get-downtime', async (req, res) => {
+app.post('/api/get-downtime', async (req, res) => {
   try {
     // When the power of the machine is above threshold level send the previous downtime of the machine to frontend which
     // is subtracted from the current time to display uptime 
@@ -153,7 +153,7 @@ app.post('/get-downtime', async (req, res) => {
     console.error(error.message)
   }
 })
-app.post(`/get-yesterday-uptime`, async (req, res) => {
+app.post(`/api/get-yesterday-uptime`, async (req, res) => {
   // This Route is run only once as it sends the yesterdays total uptime to the frontend 
   try {
     const user_id = req.body.user_id
@@ -171,7 +171,7 @@ app.post(`/get-yesterday-uptime`, async (req, res) => {
   }
 }
 )
-app.post('/record-machine-params', async (req, res) => {
+app.post('/api/record-machine-params', async (req, res) => {
   // Wheneber there's an issue and the user clicks on the Record Issue Button
   // All the machine Parameters are stored on a machine record table
   const machine_params = req.body.machine_params
@@ -184,7 +184,7 @@ app.post('/record-machine-params', async (req, res) => {
     res.send("Record already Exists")
   }
 })
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
   // Recieves the usercredentials,machine array and Factory name from the register page of the frontend  
   try {
     const {
@@ -218,7 +218,7 @@ app.post('/register', async (req, res) => {
 
 
 
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   try {
     const { email, password, token_captcha } = req.body
     let human = await validateHuman(token_captcha)
@@ -255,7 +255,7 @@ const validateHuman = async (token_captcha) => {
 }
 
 // For Front-End Routes --Production
-app.get('/*', function (req, res) {
+app.get('/api/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
